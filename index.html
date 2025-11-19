@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jennifer Estigene's Portfolio</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        line-height: 1.7;
+        color: #2c2c2c;
+        background: #fefefe;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        width: 60px;
+        height: 60px;
+        background: #2c2c2c;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.5em;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .back-to-top:hover {
+        background: #000;
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    /* Main Split Container */
+    .main-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 100vh;
+    }
+
+    /* Left Side - Profile Panel (Sticky) */
+    .profile-panel {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        padding: 80px 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+        border-right: 1px solid #d0d0d0;
+    }
+
+    .profile-content h1 {
+        font-size: 4.5em;
+        font-weight: 400;
+        margin-bottom: 30px;
+        letter-spacing: -2px;
+        line-height: 1.1;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .profile-content .title {
+        font-size: 1.5em;
+        color: #666;
+        margin-bottom: 40px;
+        font-style: italic;
+        animation: fadeInUp 0.8s ease 0.1s backwards;
+    }
+
+    .profile-content .intro {
+        font-size: 1.1em;
+        line-height: 1.8;
+        color: #555;
+        margin-bottom: 50px;
+        max-width: 500px;
+        animation: fadeInUp 0.8s ease 0.2s backwards;
+    }
+
+    .contact-buttons {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease 0.3s backwards;
+    }
+
+    .contact-buttons a {
+        padding: 12px 30px;
+        text-decoration: none;
+        border: 2px solid #2c2c2c;
+        color: #2c2c2c;
+        font-family: -apple-system, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.85em;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .contact-buttons a:hover {
+        background: #2c2c2c;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .total-projects {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 2px solid #d0d0d0;
+        animation: fadeInUp 0.8s ease 0.4s backwards;
+    }
+
+    .total-projects .number {
+        font-size: 6em;
+        font-weight: 300;
+        color: #2c2c2c;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+
+    .total-projects .label {
+        font-size: 1.1em;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: -apple-system, sans-serif;
+    }
+
+    /* Right Side - Work List (Scrollable) */
+    .work-panel {
+        padding: 80px 60px 100px;
+        background: #fff;
+    }
+
+    .work-panel h2 {
+        font-size: 4em;
+        font-weight: 900;
+        margin-bottom: 60px;
+        letter-spacing: -2px;
+        font-family: -apple-system, sans-serif;
+        animation: fadeInRight 0.8s ease 0.5s backwards;
+    }
+
+    .work-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .work-item {
+        text-decoration: none;
+        color: inherit;
+        padding: 50px 0;
+        border-top: 1px solid #e0e0e0;
+        display: grid;
+        grid-template-columns: 100px 1fr auto;
+        gap: 40px;
+        align-items: center;
+        transition: all 0.3s ease;
+        opacity: 0;
+        animation: fadeInRight 0.6s ease forwards;
+    }
+
+    .work-item:nth-child(1) { animation-delay: 0.6s; }
+    .work-item:nth-child(2) { animation-delay: 0.7s; }
+    .work-item:nth-child(3) { animation-delay: 0.8s; }
+    .work-item:nth-child(4) { animation-delay: 0.9s; }
+
+    .work-item:hover {
+        background: #fafafa;
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-left: -30px;
+        margin-right: -30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .work-number {
+        font-size: 3.5em;
+        font-weight: 200;
+        color: #ccc;
+        font-family: 'Georgia', serif;
+        transition: all 0.3s ease;
+    }
+
+    .work-number.loaded {
+        color: #2c2c2c;
+    }
+
+    .work-info h3 {
+        font-size: 2em;
+        font-weight: 700;
+        margin-bottom: 10px;
+        letter-spacing: -1px;
+        font-family: -apple-system, sans-serif;
+        transition: transform 0.3s ease;
+    }
+
+    .work-item:hover .work-info h3 {
+        transform: translateX(5px);
+    }
+
+    .work-info p {
+        font-size: 1.1em;
+        color: #666;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    .work-arrow {
+        font-size: 3em;
+        font-weight: 300;
+        color: #ccc;
+        transition: all 0.3s ease;
+    }
+
+    .work-item:hover .work-arrow {
+        transform: translateX(10px) scale(1.1);
+        color: #2c2c2c;
+    }
+
+    .work-item:hover .work-number {
+        color: #2c2c2c;
+        transform: scale(1.05);
+    }
+
+    footer {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+        font-size: 0.8em;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-family: -apple-system, sans-serif;
+        border-top: 1px solid #e0e0e0;
+        margin-top: 40px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .back-to-top {
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2em;
+        }
+
+        .main-container {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-panel {
+            position: relative;
+            height: auto;
+            min-height: 80vh;
+        }
+
+        .profile-content h1 {
+            font-size: 3.5em;
+        }
+
+        .work-panel {
+            padding: 60px 40px 80px;
+        }
+
+        .work-panel h2 {
+            font-size: 3em;
+        }
+
+        .work-item {
+            grid-template-columns: 80px 1fr;
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .work-arrow {
+            display: none;
+        }
+
+        .work-info h3 {
+            font-size: 1.6em;
+        }
+
+        .work-number {
+            font-size: 2.5em;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .profile-panel {
+            padding: 60px 30px;
+        }
+
+        .profile-content h1 {
+            font-size: 2.5em;
+        }
+
+        .profile-content .title {
+            font-size: 1.2em;
+        }
+
+        .profile-content .intro {
+            font-size: 1em;
+        }
+
+        .total-projects .number {
+            font-size: 4em;
+        }
+
+        .work-panel {
+            padding: 40px 30px 60px;
+        }
+
+        .work-panel h2 {
+            font-size: 2em;
+        }
+
+        .work-item {
+            grid-template-columns: 60px 1fr;
+            gap: 20px;
+            padding: 30px 0;
+        }
+
+        .work-info h3 {
+            font-size: 1.3em;
+        }
+
+        .work-number {
+            font-size: 2em;
+        }
+
+        .contact-buttons {
+            flex-direction: column;
+        }
+
+        .contact-buttons a {
+            text-align: center;
+        }
+    }
+    </style>
+</head>
+<body>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+    <div class="main-container">
+        <!-- Left Panel - Profile (Sticky) -->
+        <div class="profile-panel">
+            <div class="profile-content">
+                <h1>Jennifer Estigene</h1>
+                <p class="title">Data and Graphics Scientist</p>
+                <p class="intro">
+                    Bringing structure, insight, and meaning to data.
+                </p>
+                <div class="contact-buttons">
+                    <a href="mailto:jenniferestigene@outlook.com">Email</a>
+                    <!--
+                    <a href="https://linkedin.com/in/jenniferestigene" target="_blank">LinkedIn</a>
+                    -->
+                    <a href="https://github.com/jenniferestigene" target="_blank">GitHub</a>
+                </div>
+
+                <div class="total-projects">
+                    <div class="number" id="totalProjectCount">0</div>
+                    <div class="label">Total Projects</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Work List (Scrollable) -->
+        <div class="work-panel">
+            <h2>Portfolio</h2>
+            <div class="work-list">
+                <a href="web-pages/data-visualization.html" class="work-item" data-section="data-visualization">
+                    <div class="work-number loaded">6</div>
+                    <div class="work-info">
+                        <h3>Data Visualization</h3>
+                        <p>Charts, maps, and interactive graphics</p>
+                    </div>
+                    <div class="work-arrow">→</div>
+                </a>
+
+        <!-- Commented Out: Creative Coding -->
+        <!--
+        <a href="creative-coding.html" class="work-item" data-section="creative-coding">
+            <div class="work-number loaded">4</div>
+            <div class="work-info">
+                <h3>Creative Coding</h3>
+                <p>Computational design</p>
+            </div>
+            <div class="work-arrow">→</div>
+        </a>
+        -->
+
+        <!-- Commented Out: Data Science -->
+        <!--
+        <a href="data-science.html" class="work-item" data-section="data-science">
+            <div class="work-number loaded">8</div>
+            <div class="work-info">
+                <h3>Data Science</h3>
+                <p>Analysis, modeling, and research projects</p>
+            </div>
+            <div class="work-arrow">→</div>
+        </a>
+        -->
+
+        <!-- Commented Out: Machine Learning -->
+        <!--
+        <a href="machine-learning.html" class="work-item" data-section="machine-learning">
+            <div class="work-number loaded">5</div>
+            <div class="work-info">
+                <h3>Machine Learning</h3>
+                <p>Predictive models and AI applications</p>
+            </div>
+            <div class="work-arrow">→</div>
+        </a>
+        -->
+            </div>
+
+            <footer>
+                <p>© 2025 Jennifer Estigene</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Project counting
+        const sectionConfig = {
+            'data-visualization': {
+                page: 'data-visualization.html',
+                selector: '.work-item'
+            },
+            'creative-coding': {
+                page: 'creative-coding.html',
+                selector: '.work-item'
+            },
+            'data-science': {
+                page: 'data-science.html',
+                selector: '.work-item'
+            },
+            'machine-learning': {
+                page: 'machine-learning.html',
+                selector: '.work-item'
+            }
+        };
+
+        async function updateProjectCount(sectionName) {
+            const config = sectionConfig[sectionName];
+            if (!config) return 0;
+
+            const countElement = document.querySelector(`[data-section="${sectionName}"] .work-number`);
+            if (!countElement) return 0;
+
+            try {
+                const response = await fetch(config.page);
+                if (!response.ok) {
+                    return 0;
+                }
+
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const projectElements = doc.querySelectorAll(config.selector);
+                const count = projectElements.length;
+                
+                countElement.textContent = count;
+                countElement.classList.add('loaded');
+                
+                return count;
+            } catch (error) {
+                // Keep manual count on error
+                return 0;
+            }
+        }
+
+        function animateCount(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current);
+            }, 16);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const workItems = document.querySelectorAll('[data-section]');
+            let totalCount = 0;
+
+            // Update each section count and accumulate total
+            for (const item of workItems) {
+                const sectionName = item.getAttribute('data-section');
+                const count = await updateProjectCount(sectionName);
+                totalCount += count;
+            }
+
+            // Animate the total count
+            const totalElement = document.getElementById('totalProjectCount');
+            if (totalElement && totalCount > 0) {
+                animateCount(totalElement, 0, totalCount, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
