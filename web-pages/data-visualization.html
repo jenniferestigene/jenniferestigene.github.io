@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization | Jennifer Estigene</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #fefefe;
+        }
+
+        .nav {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        .header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            font-family: 'Georgia', serif;
+        }
+
+        .header .tagline {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        /* Filter Sections */
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 40px;
+        }
+
+        .filter-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            font-size: 0.85em;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-family: -apple-system, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            color: #2c2c2c;
+            border-bottom-color: #ccc;
+        }
+
+        .filter-btn.active {
+            color: #2c2c2c;
+            border-bottom-color: #2c2c2c;
+        }
+
+        /* Secondary filter styling (software) */
+        .software-filters .filter-btn {
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        /* Package filters - hidden by default */
+        .package-filters {
+            display: none;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+        }
+
+        .package-filters.visible {
+            display: block;
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 20px;
+        }
+
+        .package-filters .filter-btn {
+            font-size: 0.8em;
+            letter-spacing: 0.5px;
+        }
+
+        .package-filters .filter-label {
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
+        .work-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 60px 40px;
+        }
+
+        .work-item {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .work-item.hidden {
+            display: none;
+        }
+
+        .work-item:hover {
+            transform: translateY(-8px);
+        }
+
+        .work-item:hover .work-image {
+            opacity: 0.9;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            border-color: #2c2c2c;
+        }
+
+        .work-item:hover .work-title {
+            color: #000;
+        }
+
+        .work-image {
+            width: 100%;
+            aspect-ratio: 3/2;
+            background: #f8f8f8;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e8e8e8;
+        }
+
+        .work-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .work-image.placeholder {
+            color: #ccc;
+            font-size: 0.85em;
+            text-align: center;
+            padding: 20px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .work-title {
+            font-size: 1.4em;
+            font-weight: 400;
+            margin-bottom: 10px;
+            line-height: 1.3;
+            font-family: 'Georgia', serif;
+            transition: color 0.2s ease;
+        }
+
+        .work-description {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.6;
+            font-family: -apple-system, sans-serif;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 0.8em;
+            border-top: 1px solid #e8e8e8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: -apple-system, sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            .work-grid {
+                grid-template-columns: 1fr;
+                padding: 0 20px 80px;
+                gap: 50px;
+            }
+            .header {
+                padding: 60px 20px 40px;
+            }
+            .filter-container {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../index.html">← Home</a>
+    </nav>
+
+    <header class="header">
+        <h1>Data Visualization</h1>
+        <p class="tagline">A collection of charts, maps, and interactive visuals designed to communicate data with clarity and purpose, blending analytical depth with thoughtful, intentional design.</p>
+    </header>
+
+    <!-- Filter Sections -->
+    <div class="filter-container">
+        <!-- Primary Filter: Type -->
+        <div class="filter-section type-filters">
+            <div class="filter-label">Visualization</div>
+            <div class="filter-buttons">
+                <button class="filter-btn type-filter active" data-type="all">All</button>
+                <button class="filter-btn type-filter" data-type="charts">Charts</button>
+                <button class="filter-btn type-filter" data-type="maps">Maps</button>
+                <button class="filter-btn type-filter" data-type="interactives">Interactives</button>
+            </div>
+        </div>
+
+        <!-- Secondary Filter: Software -->
+        <div class="filter-section software-filters">
+            <div class="filter-label">Software</div>
+            <div class="filter-buttons">
+                <button class="filter-btn software-filter active" data-software="all">All</button>
+                <button class="filter-btn software-filter" data-software="r">R</button>
+                <button class="filter-btn software-filter" data-software="python">Python</button>
+                <button class="filter-btn software-filter" data-software="javascript">JavaScript</button>
+                <button class="filter-btn software-filter" data-software="html/css">HTML/CSS</button>
+                <button class="filter-btn software-filter" data-software="GIS">GIS</button>
+
+            </div>
+
+            <!-- Third Level Filter: Packages (conditionally visible) -->
+            <!-- R Packages -->
+            <div class="filter-section package-filters" id="r-packages">
+                <div class="filter-label">R Packages</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn package-filter" data-package="all" data-parent="r">All</button>
+                    <button class="filter-btn package-filter" data-package="ggplot2" data-parent="r">ggplot2</button>
+                </div>
+            </div>
+
+            <!-- Python Packages -->
+            <div class="filter-section package-filters" id="python-packages">
+                <div class="filter-label">Python Libraries</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn package-filter" data-package="all" data-parent="python">All</button>
+                    <button class="filter-btn package-filter" data-package="matplotlib" data-parent="python">Matplotlib</button>
+                </div>
+            </div>
+
+            <!-- JavaScript Packages -->
+            <div class="filter-section package-filters" id="javascript-packages">
+                <div class="filter-label">JavaScript Libraries</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn package-filter" data-package="all" data-parent="javascript">All</button>
+                    <button class="filter-btn package-filter" data-package="d3" data-parent="javascript">D3.js</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <main class="work-grid">
+        <!-- Water Insecurity Project -->
+        <a href="../projects/water-insecurity.html" class="work-item" 
+           data-category="charts" 
+           data-software="r html/css"
+           data-packages="ggplot2">
+            <div class="work-image">
+                <img src="../images/water_insecurity.png" alt="Water Insecurity Analysis">
+            </div>
+            <h2 class="work-title">Water Insecurity in the U.S.</h2>
+            <p class="work-description">State-level changes in household plumbing access, 2022-2023.</p>
+        </a>
+        
+        <!-- FBI Crime Data Project -->
+        <a href="../projects/nibrs-adoption.html" class="work-item" 
+            data-category="maps" 
+            data-software="r html/css"
+            data-packages="ggplot2">
+             <div class="work-image">
+                <img src="../images/nibrs_adoption_map.png" alt="NIBRS Adoption Map">
+             </div>
+             <h2 class="work-title">NIBRS Adoption Across America</h2>
+            <p class="work-description">FBI crime reporting system adoption by state.</p>
+        </a>
+
+        <!-- ER Wait Times Project -->
+        <a href="../projects/er_wait_times.html" class="work-item work-item-animated" 
+            data-category="charts interactives healthcare" 
+            data-software="r javascript html/css"
+            data-packages="ggplot2 d3 tidyverse">
+            <div class="work-image">
+        <div id="mini-beeswarm-container"></div>
+        </div>
+        <h2 class="work-title">Emergency Department Wait Times</h2>
+        <p class="work-description">Interactive beeswarm showing state-level ER wait time disparities.</p>
+        </a>
+
+<style>
+.work-item-animated .work-image {
+    background: #FAFAFA;
+    position: relative;
+}
+
+#mini-beeswarm-container {
+    width: 100%;
+    height: 100%;
+}
+
+#mini-beeswarm-container svg {
+    background: #FAFAFA;
+}
+</style>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// Full dataset
+const miniData = [
+    {"state":"ND","score":124},{"state":"WY","score":132},{"state":"AR","score":133},
+    {"state":"CO","score":133},{"state":"MT","score":134},{"state":"SD","score":138},
+    {"state":"AK","score":140},{"state":"AL","score":145},{"state":"NE","score":149},
+    {"state":"IA","score":152},{"state":"MN","score":153},{"state":"VT","score":153},
+    {"state":"WI","score":154},{"state":"UT","score":156},{"state":"ID","score":161},
+    {"state":"ME","score":161},{"state":"NH","score":165},{"state":"KS","score":165},
+    {"state":"IN","score":166},{"state":"AZ","score":168},{"state":"OR","score":171},
+    {"state":"WA","score":171},{"state":"WV","score":171},{"state":"OH","score":173},
+    {"state":"CT","score":175},{"state":"OK","score":176},{"state":"PA","score":177},
+    {"state":"MO","score":177},{"state":"MI","score":178},{"state":"IL","score":180},
+    {"state":"KY","score":181},{"state":"NM","score":182},{"state":"NC","score":184},
+    {"state":"CA","score":184},{"state":"TN","score":188},{"state":"VA","score":189},
+    {"state":"RI","score":189},{"state":"SC","score":189},{"state":"TX","score":190},
+    {"state":"MS","score":191},{"state":"GA","score":191},{"state":"HI","score":193},
+    {"state":"LA","score":194},{"state":"FL","score":194},{"state":"NV","score":197},
+    {"state":"DE","score":200},{"state":"MA","score":201},{"state":"NJ","score":206},
+    {"state":"NY","score":206},{"state":"DC","score":211},{"state":"MD","score":224}
+];
+
+const avgWaitTime = 161;
+
+function createMiniBeeswarm() {
+    const container = document.getElementById('mini-beeswarm-container');
+    if (!container) return;
+    
+    const width = container.offsetWidth || 320;
+    const height = container.offsetHeight || 213;
+    const margin = {top: 30, right: 20, bottom: 40, left: 20};
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    // Clear any existing content
+    container.innerHTML = '';
+
+    const svg = d3.select('#mini-beeswarm-container')
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const colorScale = d3.scaleLinear()
+        .domain([120, 165, 220])
+        .range(['#2a9d8f', '#f4a259', '#d62828']);
+
+    const xScale = d3.scaleLinear()
+        .domain([110, 230])
+        .range([0, innerWidth]);
+
+    const radius = Math.min(innerWidth / 60, 5);
+
+    // X axis
+    const xAxis = d3.axisBottom(xScale)
+        .ticks(5)
+        .tickFormat(d => d + 'min');
+
+    svg.append('g')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(xAxis)
+        .style('font-size', '8px')
+        .style('font-family', '-apple-system, sans-serif');
+
+    // Average line
+    svg.append('line')
+        .attr('x1', xScale(avgWaitTime))
+        .attr('x2', xScale(avgWaitTime))
+        .attr('y1', 0)
+        .attr('y2', innerHeight)
+        .attr('stroke', '#d62828')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '3,3')
+        .attr('opacity', 0.5);
+
+    svg.append('text')
+        .attr('x', xScale(avgWaitTime))
+        .attr('y', -5)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '9px')
+        .attr('font-weight', '600')
+        .attr('fill', '#d62828')
+        .attr('font-family', '-apple-system, sans-serif')
+        .text('US Avg');
+
+    // Initialize positions
+    miniData.forEach(d => {
+        d.x = xScale(d.score);
+        d.y = innerHeight / 2;
+    });
+
+    // Force simulation
+    const simulation = d3.forceSimulation(miniData)
+        .force('x', d3.forceX(d => xScale(d.score)).strength(1))
+        .force('y', d3.forceY(innerHeight / 2).strength(0.1))
+        .force('collide', d3.forceCollide(radius + 1))
+        .stop();
+
+    for (let i = 0; i < 300; i++) simulation.tick();
+
+    // Draw circles
+    const circles = svg.selectAll('.mini-circle')
+        .data(miniData)
+        .enter()
+        .append('g');
+
+    circles.append('circle')
+        .attr('class', 'mini-circle')
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+        .attr('r', 0)
+        .attr('fill', d => colorScale(d.score))
+        .attr('stroke', 'white')
+        .attr('stroke-width', 0.5)
+        .transition()
+        .duration(800)
+        .delay((d, i) => i * 10)
+        .attr('r', radius);
+
+    // Add state labels (smaller)
+    circles.append('text')
+        .attr('x', d => d.x)
+        .attr('y', d => d.y + 2)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '6px')
+        .attr('font-weight', '700')
+        .attr('fill', 'white')
+        .attr('font-family', '-apple-system, sans-serif')
+        .attr('pointer-events', 'none')
+        .attr('opacity', 0)
+        .text(d => d.state)
+        .transition()
+        .duration(600)
+        .delay((d, i) => i * 10 + 400)
+        .attr('opacity', 1);
+
+    // Continuous gentle pulse animation
+    function pulse() {
+        svg.selectAll('.mini-circle')
+            .transition()
+            .duration(2000)
+            .ease(d3.easeSinInOut)
+            .attr('r', radius * 1.1)
+            .transition()
+            .duration(2000)
+            .ease(d3.easeSinInOut)
+            .attr('r', radius)
+            .on('end', function() {
+                if (document.getElementById('mini-beeswarm-container')) {
+                    pulse();
+                }
+            });
+    }
+
+    setTimeout(pulse, 1000);
+}
+
+// Initialize
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(createMiniBeeswarm, 100);
+    });
+} else {
+    setTimeout(createMiniBeeswarm, 100);
+}
+
+// Reinitialize on resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(createMiniBeeswarm, 250);
+});
+</script>
+      
+
+        <!-- FEDERAL JUDGES INTERACTIVE CARD -->
+        
+        <!-- Federal Judges Appointments Project -->
+        <a href="../projects/federal-judges.html" class="work-item work-item-animated" 
+        data-category="charts interactives" 
+        data-software="r javascript html/css"
+        data-packages="ggplot2 d3">
+    <div class="work-image">
+        <div id="mini-judges-container"></div>
+    </div>
+    <h2 class="work-title">Diversity in Federal Judiciary</h2>
+    <p class="work-description">Demographic shifts in U.S. federal judge appointments across two centuries.</p>
+        </a>
+
+<style>
+.work-item-animated .work-image {
+    background: #FAFAFA;
+    position: relative;
+}
+
+#mini-judges-container {
+    width: 100%;
+    height: 100%;
+}
+
+#mini-judges-container svg {
+    background: #FAFAFA;
+}
+
+.mini-bar {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.mini-bar:hover {
+    opacity: 0.8;
+}
+</style>
+
+<script>
+// 2020s data for mini visualization
+const miniJudgesData = [
+    {demographic: "White Male", percentage: 38.1, n: 127},
+    {demographic: "White Female", percentage: 25.8, n: 86},
+    {demographic: "Black Female", percentage: 14.1, n: 47},
+    {demographic: "Hispanic Female", percentage: 7.5, n: 25},
+    {demographic: "Black Male", percentage: 5.4, n: 18},
+    {demographic: "Asian Female", percentage: 4.2, n: 14},
+    {demographic: "Hispanic Male", percentage: 3.9, n: 13},
+    {demographic: "Asian Male", percentage: 0.9, n: 3}
+];
+
+const judgesColorScale = {
+    "White Male": "#B8B8B8",
+    "White Female": "#2a9d8f",
+    "Black Male": "#f4a259",
+    "Black Female": "#d62828",
+    "Hispanic Male": "#8338ec",
+    "Hispanic Female": "#ff006e",
+    "Asian Male": "#fb5607",
+    "Asian Female": "#ffbe0b"
+};
+
+function createMiniJudges() {
+    const container = document.getElementById('mini-judges-container');
+    if (!container) return;
+    
+    const width = container.offsetWidth || 320;
+    const height = container.offsetHeight || 213;
+    const margin = {top: 25, right: 60, bottom: 30, left: 85};
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    // Clear any existing content
+    container.innerHTML = '';
+
+    const svg = d3.select('#mini-judges-container')
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Title
+    svg.append('text')
+        .attr('x', innerWidth / 2)
+        .attr('y', -10)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '10px')
+        .attr('font-weight', '700')
+        .attr('font-family', '-apple-system, sans-serif')
+        .attr('fill', '#2c2c2c')
+        .text('2020s Appointments');
+
+    // Scales
+    const xScale = d3.scaleLinear()
+        .domain([0, 40])
+        .range([0, innerWidth]);
+
+    const yScale = d3.scaleBand()
+        .domain(miniJudgesData.map(d => d.demographic))
+        .range([0, innerHeight])
+        .padding(0.25);
+
+    // X axis
+    const xAxis = d3.axisBottom(xScale)
+        .ticks(4)
+        .tickFormat(d => d + '%');
+
+    svg.append('g')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(xAxis)
+        .style('font-size', '7px')
+        .style('font-family', '-apple-system, sans-serif')
+        .selectAll('text')
+        .style('fill', '#666');
+
+    // Y axis
+    const yAxis = d3.axisLeft(yScale)
+        .tickSize(0);
+
+    svg.append('g')
+        .call(yAxis)
+        .style('font-size', '7px')
+        .style('font-family', '-apple-system, sans-serif')
+        .selectAll('text')
+        .style('fill', '#2c2c2c')
+        .style('font-weight', '600');
+
+    // Remove domain line
+    svg.selectAll('.domain').remove();
+
+    // Bars
+    const bars = svg.selectAll('.mini-bar')
+        .data(miniJudgesData)
+        .enter()
+        .append('rect')
+        .attr('class', 'mini-bar')
+        .attr('x', 0)
+        .attr('y', d => yScale(d.demographic))
+        .attr('height', yScale.bandwidth())
+        .attr('width', 0)
+        .attr('fill', d => judgesColorScale[d.demographic])
+        .attr('rx', 2);
+
+    // Animate bars
+    bars.transition()
+        .duration(1000)
+        .delay((d, i) => i * 80)
+        .attr('width', d => xScale(d.percentage));
+
+    // Value labels
+    svg.selectAll('.mini-value')
+        .data(miniJudgesData)
+        .enter()
+        .append('text')
+        .attr('class', 'mini-value')
+        .attr('x', 0)
+        .attr('y', d => yScale(d.demographic) + yScale.bandwidth() / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'start')
+        .attr('font-size', '7px')
+        .attr('font-weight', '600')
+        .attr('font-family', '-apple-system, sans-serif')
+        .attr('fill', '#2c2c2c')
+        .attr('opacity', 0)
+        .text(d => d.percentage.toFixed(1) + '%')
+        .transition()
+        .duration(600)
+        .delay((d, i) => i * 80 + 400)
+        .attr('x', d => xScale(d.percentage) + 3)
+        .attr('opacity', 1);
+
+    // Continuous subtle animation
+    function pulse() {
+        svg.selectAll('.mini-bar')
+            .transition()
+            .duration(2000)
+            .ease(d3.easeSinInOut)
+            .attr('opacity', 0.85)
+            .transition()
+            .duration(2000)
+            .ease(d3.easeSinInOut)
+            .attr('opacity', 1)
+            .on('end', function() {
+                if (document.getElementById('mini-judges-container')) {
+                    pulse();
+                }
+            });
+    }
+
+    setTimeout(pulse, 1500);
+}
+
+// Initialize
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(createMiniJudges, 100);
+    });
+} else {
+    setTimeout(createMiniJudges, 100);
+}
+
+// Reinitialize on resize
+let judgesResizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(judgesResizeTimer);
+    judgesResizeTimer = setTimeout(createMiniJudges, 250);
+});
+</script>
+        
+        <!-- Gas Prices Project -->
+        <a href="../projects/gas-prices.html" class="work-item" 
+            data-category="charts" 
+            data-software="python html/css"
+            data-packages="matplotlib">
+             <div class="work-image">
+                <img src="../images/gas_prices_timeline.png" alt="Gas Prices Timeline">
+            </div>
+            <h2 class="work-title">U.S. Gas Prices Through Economic Events</h2>
+            <p class="work-description">Fuel price trends over 30+ years, annotated with major crises and market shocks.</p>
+        </a>
+       
+    <!-- FLINT WATER INTERACTIVE CARD -->
+
+        <!-- Flint Water Project -->
+        <a href="../projects/flint-water.html" class="work-item work-item-animated" 
+            data-category="maps interactives" 
+            data-software="python javascript html/css GIS"
+            data-packages="matplotlib d3">
+            <div class="work-image">
+                <div id="mini-flint-container"></div>
+            </div>
+            <h2 class="work-title">Lead Contamination in Flint, Michigan</h2>
+            <p class="work-description">GIS spatial analysis mapping lead levels in Flint's municipal water supply.</p>
+        </a>
+
+<style>
+.work-item-animated .work-image {
+    background: #E8F0E8;
+    position: relative;
+}
+
+#mini-flint-container {
+    width: 100%;
+    height: 100%;
+}
+
+#mini-flint-container svg {
+    background: #E8F0E8;
+}
+
+.mini-sample {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mini-sample:hover {
+    stroke-width: 2.5px;
+    r: 4;
+}
+
+.mini-river {
+    fill: none;
+    stroke: #4A90E2;
+    stroke-width: 6;
+    opacity: 0.7;
+}
+</style>
+
+<script>
+// Mini Flint map configuration
+const flintConfig = {
+    center: { lat: 43.0125, lon: -83.6875 },
+    latRange: 0.10,
+    lonRange: 0.12
+};
+
+flintConfig.minLat = flintConfig.center.lat - flintConfig.latRange / 2;
+flintConfig.maxLat = flintConfig.center.lat + flintConfig.latRange / 2;
+flintConfig.minLon = flintConfig.center.lon - flintConfig.lonRange / 2;
+flintConfig.maxLon = flintConfig.center.lon + flintConfig.lonRange / 2;
+
+const flintColorMap = {
+    'Not Detected': '#E8F5E9',
+    'Low (< 5 ppb)': '#81C784',
+    'Elevated (5-15 ppb)': '#FFB74D',
+    'High (15-50 ppb)': '#E57373',
+    'Dangerous (> 50 ppb)': '#C62828'
+};
+
+// Generate mini sample data
+function generateMiniFlintData(count = 80) {
+    const categories = {
+        'Not Detected': 0.15,
+        'Low (< 5 ppb)': 0.44,
+        'Elevated (5-15 ppb)': 0.20,
+        'High (15-50 ppb)': 0.15,
+        'Dangerous (> 50 ppb)': 0.06
+    };
+
+    const data = [];
+    let id = 0;
+
+    for (const [category, proportion] of Object.entries(categories)) {
+        const categoryCount = Math.round(count * proportion);
+        
+        for (let i = 0; i < categoryCount; i++) {
+            data.push({
+                id: id++,
+                category: category,
+                lat: Math.random() * flintConfig.latRange + flintConfig.minLat,
+                lon: Math.random() * flintConfig.lonRange + flintConfig.minLon
+            });
+        }
+    }
+
+    return data;
+}
+
+function createMiniFlint() {
+    const container = document.getElementById('mini-flint-container');
+    if (!container) return;
+    
+    const width = container.offsetWidth || 320;
+    const height = container.offsetHeight || 213;
+    const margin = {top: 5, right: 5, bottom: 5, left: 5};
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    // Clear any existing content
+    container.innerHTML = '';
+
+    const svg = d3.select('#mini-flint-container')
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Scales
+    const xScale = d3.scaleLinear()
+        .domain([flintConfig.minLon, flintConfig.maxLon])
+        .range([0, innerWidth]);
+
+    const yScale = d3.scaleLinear()
+        .domain([flintConfig.minLat, flintConfig.maxLat])
+        .range([innerHeight, 0]);
+
+    // Draw Flint River
+    const riverPath = [
+        [flintConfig.minLon + 0.02, flintConfig.maxLat - 0.01],
+        [flintConfig.minLon + 0.04, flintConfig.maxLat - 0.03],
+        [flintConfig.minLon + 0.05, flintConfig.maxLat - 0.05],
+        [flintConfig.minLon + 0.07, flintConfig.maxLat - 0.07],
+        [flintConfig.minLon + 0.09, flintConfig.maxLat - 0.09]
+    ];
+
+    const lineGenerator = d3.line()
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
+        .curve(d3.curveCatmullRom);
+
+    svg.append('path')
+        .datum(riverPath)
+        .attr('class', 'mini-river')
+        .attr('d', lineGenerator)
+        .attr('opacity', 0)
+        .transition()
+        .duration(800)
+        .attr('opacity', 0.7);
+
+    // Generate and draw samples
+    const data = generateMiniFlintData(80);
+
+    const samples = svg.selectAll('.mini-sample')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('class', 'mini-sample')
+        .attr('cx', d => xScale(d.lon))
+        .attr('cy', d => yScale(d.lat))
+        .attr('r', 0)
+        .attr('fill', d => flintColorMap[d.category])
+        .attr('stroke', 'white')
+        .attr('stroke-width', 1.5)
+        .attr('opacity', 0);
+
+    // Animate samples appearing
+    samples.transition()
+        .duration(600)
+        .delay((d, i) => i * 15)
+        .attr('r', 2.5)
+        .attr('opacity', 0.85);
+
+    // Add title
+    svg.append('text')
+        .attr('x', innerWidth / 2)
+        .attr('y', 15)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '11px')
+        .attr('font-weight', '700')
+        .attr('font-family', '-apple-system, sans-serif')
+        .attr('fill', '#2C3E50')
+        .attr('opacity', 0)
+        .text('Flint, Michigan')
+        .transition()
+        .duration(600)
+        .delay(400)
+        .attr('opacity', 1);
+
+    // Add mini legend
+    const legendData = [
+        { label: 'Safe', color: flintColorMap['Low (< 5 ppb)'] },
+        { label: 'Elevated', color: flintColorMap['Elevated (5-15 ppb)'] },
+        { label: 'High', color: flintColorMap['High (15-50 ppb)'] },
+        { label: 'Dangerous', color: flintColorMap['Dangerous (> 50 ppb)'] }
+    ];
+
+    const legend = svg.append('g')
+        .attr('transform', `translate(${innerWidth - 55}, ${innerHeight - 50})`);
+
+    legendData.forEach((item, i) => {
+        const legendRow = legend.append('g')
+            .attr('transform', `translate(0, ${i * 12})`)
+            .attr('opacity', 0);
+
+        legendRow.append('circle')
+            .attr('cx', 5)
+            .attr('cy', 0)
+            .attr('r', 3)
+            .attr('fill', item.color)
+            .attr('stroke', 'white')
+            .attr('stroke-width', 1);
+
+        legendRow.append('text')
+            .attr('x', 12)
+            .attr('y', 0)
+            .attr('dy', '0.35em')
+            .attr('font-size', '7px')
+            .attr('font-family', '-apple-system, sans-serif')
+            .attr('fill', '#2C3E50')
+            .text(item.label);
+
+        legendRow.transition()
+            .duration(400)
+            .delay(1000 + i * 100)
+            .attr('opacity', 1);
+    });
+
+    // Continuous subtle animation - pulse effect on high contamination
+    function pulseHighContamination() {
+        svg.selectAll('.mini-sample')
+            .filter(d => d.category === 'High (15-50 ppb)' || d.category === 'Dangerous (> 50 ppb)')
+            .transition()
+            .duration(1500)
+            .ease(d3.easeSinInOut)
+            .attr('opacity', 0.95)
+            .attr('r', 3)
+            .transition()
+            .duration(1500)
+            .ease(d3.easeSinInOut)
+            .attr('opacity', 0.85)
+            .attr('r', 2.5)
+            .on('end', function() {
+                if (document.getElementById('mini-flint-container')) {
+                    pulseHighContamination();
+                }
+            });
+    }
+
+    setTimeout(pulseHighContamination, 2000);
+}
+
+// Initialize
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(createMiniFlint, 100);
+    });
+} else {
+    setTimeout(createMiniFlint, 100);
+}
+
+// Reinitialize on resize
+let flintResizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(flintResizeTimer);
+    flintResizeTimer = setTimeout(createMiniFlint, 250);
+});
+</script>
+    </main>
+
+    <footer>
+        <p>© 2025 Jennifer Estigene</p>
+    </footer>
+
+    <script>
+        // Get all filter buttons
+        const typeFilters = document.querySelectorAll('.type-filter');
+        const softwareFilters = document.querySelectorAll('.software-filter');
+        const packageFilters = document.querySelectorAll('.package-filter');
+        const workItems = document.querySelectorAll('.work-item');
+
+        // Get package filter containers
+        const rPackagesSection = document.getElementById('r-packages');
+        const pythonPackagesSection = document.getElementById('python-packages');
+        const javascriptPackagesSection = document.getElementById('javascript-packages');
+
+        // Store active filters as Sets (for multiple selections)
+        let activeTypeFilters = new Set(['all']);
+        let activeSoftwareFilters = new Set(['all']);
+        let activePackageFilters = new Set(['all']);
+
+        // Function to show/hide package filters based on software selection
+        function updatePackageFilters() {
+            // Hide all package sections
+            rPackagesSection.classList.remove('visible');
+            pythonPackagesSection.classList.remove('visible');
+            javascriptPackagesSection.classList.remove('visible');
+
+            // If "All" is selected or no software selected, hide packages
+            if (activeSoftwareFilters.has('all') || activeSoftwareFilters.size === 0) {
+                // Reset package filters
+                activePackageFilters = new Set(['all']);
+                packageFilters.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-package') === 'all') {
+                        btn.classList.add('active');
+                    }
+                });
+                return;
+            }
+
+            // Show package sections for selected software
+            if (activeSoftwareFilters.has('r')) {
+                rPackagesSection.classList.add('visible');
+            }
+            if (activeSoftwareFilters.has('python')) {
+                pythonPackagesSection.classList.add('visible');
+            }
+            if (activeSoftwareFilters.has('javascript')) {
+                javascriptPackagesSection.classList.add('visible');
+            }
+        }
+
+        // Function to apply all filters with OR logic within categories, AND between categories
+        function applyFilters() {
+            workItems.forEach(item => {
+                const categories = item.getAttribute('data-category') || '';
+                const software = item.getAttribute('data-software') || '';
+                const packages = item.getAttribute('data-packages') || '';
+
+                // Check Type Filter (OR logic: matches if ANY selected type matches)
+                let matchesType = activeTypeFilters.has('all');
+                if (!matchesType) {
+                    for (let type of activeTypeFilters) {
+                        if (categories.includes(type)) {
+                            matchesType = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Check Software Filter (OR logic: matches if ANY selected software matches)
+                let matchesSoftware = activeSoftwareFilters.has('all');
+                if (!matchesSoftware) {
+                    for (let sw of activeSoftwareFilters) {
+                        if (software.includes(sw)) {
+                            matchesSoftware = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Check Package Filter (OR logic: matches if ANY selected package matches)
+                let matchesPackage = activePackageFilters.has('all');
+                if (!matchesPackage) {
+                    for (let pkg of activePackageFilters) {
+                        if (packages.includes(pkg)) {
+                            matchesPackage = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Show item only if it matches ALL filter categories (AND between categories)
+                if (matchesType && matchesSoftware && matchesPackage) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Type filter click handlers
+        typeFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-type');
+                
+                if (filterValue === 'all') {
+                    // Clicking "All" deselects everything else
+                    activeTypeFilters = new Set(['all']);
+                    typeFilters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                } else {
+                    // Clicking a specific filter
+                    if (activeTypeFilters.has(filterValue)) {
+                        // Already selected - deselect it
+                        activeTypeFilters.delete(filterValue);
+                        button.classList.remove('active');
+                        
+                        // If nothing left, select "All"
+                        if (activeTypeFilters.size === 0 || activeTypeFilters.has('all')) {
+                            activeTypeFilters = new Set(['all']);
+                            typeFilters.forEach(btn => {
+                                if (btn.getAttribute('data-type') === 'all') {
+                                    btn.classList.add('active');
+                                }
+                            });
+                        }
+                    } else {
+                        // Not selected - select it
+                        activeTypeFilters.delete('all'); // Remove "All"
+                        activeTypeFilters.add(filterValue);
+                        button.classList.add('active');
+                        
+                        // Deactivate "All" button
+                        typeFilters.forEach(btn => {
+                            if (btn.getAttribute('data-type') === 'all') {
+                                btn.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+                
+                applyFilters();
+            });
+        });
+
+        // Software filter click handlers
+        softwareFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-software');
+                
+                if (filterValue === 'all') {
+                    // Clicking "All" deselects everything else
+                    activeSoftwareFilters = new Set(['all']);
+                    softwareFilters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                } else {
+                    // Clicking a specific filter
+                    if (activeSoftwareFilters.has(filterValue)) {
+                        // Already selected - deselect it
+                        activeSoftwareFilters.delete(filterValue);
+                        button.classList.remove('active');
+                        
+                        // If nothing left, select "All"
+                        if (activeSoftwareFilters.size === 0) {
+                            activeSoftwareFilters = new Set(['all']);
+                            softwareFilters.forEach(btn => {
+                                if (btn.getAttribute('data-software') === 'all') {
+                                    btn.classList.add('active');
+                                }
+                            });
+                        }
+                    } else {
+                        // Not selected - select it
+                        activeSoftwareFilters.delete('all');
+                        activeSoftwareFilters.add(filterValue);
+                        button.classList.add('active');
+                        
+                        // Deactivate "All" button
+                        softwareFilters.forEach(btn => {
+                            if (btn.getAttribute('data-software') === 'all') {
+                                btn.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+                
+                updatePackageFilters();
+                applyFilters();
+            });
+        });
+
+        // Package filter click handlers
+        packageFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-package');
+                const parent = button.getAttribute('data-parent');
+                
+                if (filterValue === 'all') {
+                    // Clicking "All" deselects everything else
+                    activePackageFilters = new Set(['all']);
+                    packageFilters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                } else {
+                    // Clicking a specific filter
+                    if (activePackageFilters.has(filterValue)) {
+                        // Already selected - deselect it
+                        activePackageFilters.delete(filterValue);
+                        button.classList.remove('active');
+                        
+                        // If nothing left, select "All"
+                        if (activePackageFilters.size === 0) {
+                            activePackageFilters = new Set(['all']);
+                            packageFilters.forEach(btn => {
+                                if (btn.getAttribute('data-package') === 'all') {
+                                    btn.classList.add('active');
+                                }
+                            });
+                        }
+                    } else {
+                        // Not selected - select it
+                        activePackageFilters.delete('all');
+                        activePackageFilters.add(filterValue);
+                        button.classList.add('active');
+                        
+                        // Deactivate "All" button
+                        packageFilters.forEach(btn => {
+                            if (btn.getAttribute('data-package') === 'all') {
+                                btn.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+                
+                applyFilters();
+            });
+        });
+    </script>
+</body>
+</html>
