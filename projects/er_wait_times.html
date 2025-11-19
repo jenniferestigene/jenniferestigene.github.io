@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Department Wait Times | Jennifer Estigene</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #ffffff;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            background: #2c2c2c;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        .nav {
+            padding: 30px 40px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        .split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 80px);
+        }
+
+        .visual-side {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            border-right: 1px solid #e8e8e8;
+        }
+
+        .viz-container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 40px;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        .viz-container:hover {
+            transform: scale(1.02);
+        }
+
+        .viz-title {
+            font-family: 'Roboto Condensed', -apple-system, sans-serif;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2D2D2A;
+            margin-bottom: 12px;
+            text-align: left;
+            pointer-events: none;
+        }
+
+        .viz-subtitle {
+            font-family: 'Libre Franklin', -apple-system, sans-serif;
+            font-size: 0.9em;
+            color: #4a4a4a;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: left;
+            pointer-events: none;
+        }
+
+        #d3-visualization {
+            width: 100%;
+            height: 500px;
+            margin-bottom: 15px;
+        }
+
+        .viz-caption {
+            font-family: 'Libre Franklin', -apple-system, sans-serif;
+            font-size: 0.75em;
+            color: #666;
+            text-align: left;
+            border-top: 1px solid #e8e8e8;
+            padding-top: 12px;
+            pointer-events: none;
+        }
+
+        .viz-caption strong {
+            color: #2D2D2A;
+            font-weight: 600;
+        }
+
+        /* Lightbox Overlay */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            animation: fadeIn 0.3s ease;
+            padding: 40px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            width: 90vw;
+            max-width: 1400px;
+            height: auto;
+            max-height: 90vh;
+            background: white;
+            border-radius: 8px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: zoomIn 0.3s ease;
+            cursor: default;
+            overflow-y: auto;
+        }
+
+        .lightbox-title {
+            font-family: 'Roboto Condensed', -apple-system, sans-serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #2D2D2A;
+            margin-bottom: 15px;
+        }
+
+        .lightbox-subtitle {
+            font-family: 'Libre Franklin', -apple-system, sans-serif;
+            font-size: 1.05em;
+            color: #4a4a4a;
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+
+        #lightbox-svg {
+            width: 100%;
+            height: 800px;
+            margin-bottom: 20px;
+        }
+
+        .lightbox-caption {
+            font-family: 'Libre Franklin', -apple-system, sans-serif;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #e8e8e8;
+            padding-top: 15px;
+        }
+
+        .lightbox-caption strong {
+            color: #2D2D2A;
+            font-weight: 600;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 3em;
+            color: #ffffff;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            font-family: -apple-system, sans-serif;
+            font-weight: 300;
+            z-index: 10001;
+        }
+
+        .lightbox-close:hover {
+            opacity: 1;
+        }
+
+        .lightbox-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            font-family: -apple-system, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .content-side {
+            padding: 80px 60px 120px;
+        }
+
+        .header-block {
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-weight: 400;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            font-family: 'Georgia', serif;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px 20px;
+            font-size: 0.95em;
+            padding: 25px 0;
+            border-top: 1px solid #e8e8e8;
+            border-bottom: 1px solid #e8e8e8;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .meta-value {
+            color: #444;
+        }
+
+        .content-block {
+            margin: 60px 0;
+        }
+
+        .content-block h2 {
+            font-size: 2em;
+            font-weight: 400;
+            margin-bottom: 25px;
+            font-family: 'Georgia', serif;
+        }
+
+        .content-block p {
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .content-block ul {
+            margin-left: 40px;
+            margin-bottom: 1.5em;
+            line-height: 1.8;
+        }
+
+        .content-block li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .content-block strong {
+            color: #2c2c2c;
+            font-weight: 600;
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: #f8f8f8;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            background: #ffffff;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: 400;
+            color: #d62828;
+            font-family: 'Georgia', serif;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            font-family: -apple-system, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .callout-box {
+            background: #2c2c2c;
+            color: #ffffff;
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 4px;
+        }
+
+        .callout-box p {
+            font-size: 1.2em;
+            line-height: 1.7;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .methodology-list {
+            background: #f8f8f8;
+            padding: 40px;
+            border-radius: 4px;
+            margin: 40px 0;
+        }
+
+        .methodology-list h3 {
+            font-size: 1.5em;
+            font-weight: 400;
+            margin-bottom: 25px;
+            font-family: 'Georgia', serif;
+        }
+
+        .methodology-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .methodology-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .methodology-list li:last-child {
+            border-bottom: none;
+        }
+
+        .methodology-list strong {
+            color: #2c2c2c;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 140px;
+        }
+
+        /* D3 Styles */
+        .state-circle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            stroke: white;
+            stroke-width: 2;
+        }
+
+        .state-circle:hover {
+            stroke: #2c2c2c;
+            stroke-width: 3;
+        }
+
+        .state-label {
+            font-size: 9px;
+            font-weight: 700;
+            fill: white;
+            text-anchor: middle;
+            pointer-events: none;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .axis text {
+            font-family: -apple-system, sans-serif;
+            font-size: 11px;
+        }
+
+        .axis-label {
+            font-family: -apple-system, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tooltip {
+            position: fixed;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.98);
+            border: 2px solid #d62828;
+            border-radius: 8px;
+            pointer-events: none;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10002;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .tooltip-state {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: #2c2c2c;
+        }
+
+        .tooltip-value {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 0.8em;
+            border-top: 1px solid #e8e8e8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: -apple-system, sans-serif;
+            margin-top: 80px;
+        }
+
+        @media (max-width: 1200px) {
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+
+            .split-container {
+                grid-template-columns: 1fr;
+            }
+
+            .visual-side {
+                position: relative;
+                height: auto;
+                min-height: 60vh;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .stat-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+    <nav class="nav">
+        <a href="../web-pages/data-visualization.html">← Back to Data Visualization</a>
+    </nav>
+
+    <div class="split-container">
+        <!-- Left: Interactive D3 Visualization -->
+        <div class="visual-side">
+            <div class="viz-container" id="viz-container">
+                <h2 class="viz-title">Emergency Department Wait Times Across America</h2>
+                <p class="viz-subtitle">Each circle represents a state, positioned by average ER wait time. The national average is 161 minutes, with wait times ranging from 124 minutes (fastest) to 224 minutes (slowest).</p>
+                <div id="d3-visualization"></div>
+                <p class="viz-caption"><strong>Data:</strong> Centers for Medicare and Medicaid Services (2023-2024) | <strong>Graphic:</strong> Jennifer Estigene</p>
+            </div>
+        </div>
+
+        <!-- Right: Content -->
+        <div class="content-side">
+            <div class="header-block">
+                <h1>Emergency Department Wait Times</h1>
+                <p class="subtitle">
+                    Mapping the hidden inequality in America's emergency care system
+                </p>
+
+                <div class="meta-grid">
+                    <span class="meta-label">Date</span>
+                    <span class="meta-value">April 2025</span>
+                    
+                    <span class="meta-label">Tools</span>
+                    <span class="meta-value">R, D3.js, ggplot2, Force Simulation</span>
+                    
+                    <span class="meta-label">Source</span>
+                    <span class="meta-value">CMS Hospital Compare Database</span>
+                    
+                    <span class="meta-label">Type</span>
+                    <span class="meta-value">Interactive Beeswarm Plot, Healthcare Analytics</span>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h2>The Problem</h2>
+                <p>
+                    When you arrive at an emergency department, how long will you wait before seeing a doctor? The answer depends heavily on where you live. This visualization reveals dramatic disparities in ER wait times across the United States, with some states providing care in just over 2 hours while others keep patients waiting nearly 4 hours.
+                </p>
+
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <div class="stat-number">124 minutes</div>
+                        <div class="stat-label">North Dakota (Fastest)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">161 minutes</div>
+                        <div class="stat-label">National Average</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">224 minutes</div>
+                        <div class="stat-label">Maryland (Slowest)</div>
+                    </div>
+                </div>
+
+                <div class="callout-box">
+                    <p>
+                        The 100-minute gap between the fastest and slowest states represents nearly two hours of additional waiting for patients in crisis. A disparity that correlates strongly with population density, hospital capacity, and healthcare infrastructure investment.
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h2>Key Insights</h2>
+                
+                <p>
+                    <strong>Rural-Urban Divide:</strong> The fastest states are predominantly rural (North Dakota, Wyoming, Montana), while the slowest cluster around major metropolitan areas. This isn't just about volume, it reflects fundamental differences in healthcare system design and resource allocation.
+                </p>
+
+                <p>
+                    <strong>Regional Clustering:</strong> Wait times show clear geographic patterns. The Northeast corridor (Maryland, DC, New Jersey, New York, Massachusetts) consistently ranks among the slowest, with average waits exceeding 200 minutes. Meanwhile, Mountain West states maintain the fastest times, often under 140 minutes.
+                </p>
+
+                <p>
+                    <strong>The Density Paradox:</strong> States with the highest population densities tend to have the longest wait times, despite having more hospitals per capita. This suggests that urban emergency departments are overwhelmed by demand that outpaces capacity, highlighting a system under strain.
+                </p>
+
+                <p>
+                    <strong>Policy Implications:</strong> These disparities have real consequences. Extended ER wait times are associated with worse patient outcomes, increased mortality for time-sensitive conditions, and higher rates of patients leaving without being seen. The data suggests that some regions need urgent investment in emergency care infrastructure.
+                </p>
+            </div>
+
+
+            <div class="content-block">
+                <h2>Design Choices</h2>
+                
+                <p>
+                    <strong>Color Palette:</strong> The gradient from teal (fast) through orange (average) to red (slow) provides intuitive visual feedback. The colors were chosen to be accessible to colorblind viewers while maintaining clear differentiation.
+                </p>
+
+                <p>
+                    <strong>The Average Line:</strong> The dashed red line at 161 minutes serves as an immediate reference point, making it easy to categorize states as above or below average at a glance.
+                </p>
+
+                <p>
+                    <strong>Interactive Elements:</strong> Rather than cluttering the visualization with labels, hover interactions reveal details on demand, keeping the chart clean while providing depth for engaged users.
+                </p>
+            </div>
+
+            <div class="methodology-list">
+                <h3>Methodology</h3>
+                <ul>
+                    <li><strong>Data Source:</strong> CMS Hospital Compare database (2023-2024 reporting period)</li>
+                    <li><strong>Metric:</strong> OP-18b - Median time from ED arrival to provider contact for admitted patients</li>
+                    <li><strong>Aggregation:</strong> State-level averages weighted by hospital volume</li>
+                    <li><strong>Visualization Type:</strong> Beeswarm plot with D3.js force simulation</li>
+                    <li><strong>Force Algorithm:</strong> Collision detection (r+2px) with x-axis attraction (strength=1)</li>
+                    <li><strong>Color Scale:</strong> Linear gradient with midpoint at national average (161 min)</li>
+                    <li><strong>Interactivity:</strong> SVG hover states with dynamic tooltips, lightbox zoom</li>
+                    <li><strong>Tools:</strong> R for data processing, D3.js v7 for visualization, ggplot2 for static version</li>
+                </ul>
+            </div>
+
+            <footer>
+                <p>© 2025 Jennifer Estigene</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Lightbox for zoomed visualization -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="closeLightbox">&times;</button>
+        <div class="lightbox-content">
+            <h2 class="lightbox-title">Emergency Department Wait Times Across America</h2>
+            <p class="lightbox-subtitle">Each circle represents a state, positioned by average ER wait time. States are distributed vertically to prevent overlap, creating a clear view of how wait times cluster across the country. The national average is 161 minutes, with wait times ranging from 124 minutes (fastest) to 224 minutes (slowest).</p>
+            <div id="lightbox-svg"></div>
+            <p class="lightbox-caption"><strong>Data:</strong> Centers for Medicare and Medicaid Services (2023-2024) | <strong>Graphic:</strong> Jennifer Estigene</p>
+        </div>
+        <div class="lightbox-hint">Click anywhere to close • Hover over states for details</div>
+    </div>
+
+    <div class="tooltip"></div>
+
+    <script>
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+
+        // Embedded data
+        const data = [{"state":"ND","score":124},{"state":"WY","score":132},{"state":"AR","score":133},{"state":"CO","score":133},{"state":"MT","score":134},{"state":"SD","score":138},{"state":"AK","score":140},{"state":"AL","score":145},{"state":"NE","score":149},{"state":"IA","score":152},{"state":"MN","score":153},{"state":"VT","score":153},{"state":"WI","score":154},{"state":"UT","score":156},{"state":"ID","score":161},{"state":"ME","score":161},{"state":"NH","score":165},{"state":"KS","score":165},{"state":"IN","score":166},{"state":"AZ","score":168},{"state":"OR","score":171},{"state":"WA","score":171},{"state":"WV","score":171},{"state":"OH","score":173},{"state":"CT","score":175},{"state":"OK","score":176},{"state":"PA","score":177},{"state":"MO","score":177},{"state":"MI","score":178},{"state":"IL","score":180},{"state":"KY","score":181},{"state":"NM","score":182},{"state":"NC","score":184},{"state":"CA","score":184},{"state":"TN","score":188},{"state":"VA","score":189},{"state":"RI","score":189},{"state":"SC","score":189},{"state":"TX","score":190},{"state":"MS","score":191},{"state":"GA","score":191},{"state":"HI","score":193},{"state":"LA","score":194},{"state":"FL","score":194},{"state":"NV","score":197},{"state":"DE","score":200},{"state":"MA","score":201},{"state":"NJ","score":206},{"state":"NY","score":206},{"state":"DC","score":211},{"state":"MD","score":224}];
+        
+        const avgWaitTime = 161;
+
+        // State names lookup
+        const stateNames = {
+            'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+            'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+            'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+            'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+            'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+            'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+            'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+            'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+            'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+            'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming',
+            'DC': 'Washington D.C.'
+        };
+
+        createBeeswarm(data, avgWaitTime, '#d3-visualization', 700, 500, 13);
+
+        function createBeeswarm(data, avgWait, containerSelector, svgWidth, svgHeight, circleRadius) {
+            const margin = {top: 50, right: 40, bottom: 70, left: 40};
+            const width = svgWidth - margin.left - margin.right;
+            const height = svgHeight - margin.top - margin.bottom;
+
+            const container = d3.select(containerSelector);
+            container.selectAll('*').remove();
+
+            const svg = container
+                .append('svg')
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .attr('viewBox', `0 0 ${svgWidth} ${svgHeight}`)
+                .style('display', 'block')
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            const tooltip = d3.select('.tooltip');
+
+            const colorScale = d3.scaleLinear()
+                .domain([120, 165, 220])
+                .range(['#2a9d8f', '#f4a259', '#d62828']);
+
+            const xScale = d3.scaleLinear()
+                .domain([110, 230])
+                .range([0, width]);
+
+            const xAxis = d3.axisBottom(xScale)
+                .ticks(10)
+                .tickFormat(d => d + ' min');
+
+            svg.append('g')
+                .attr('class', 'axis')
+                .attr('transform', `translate(0,${height})`)
+                .call(xAxis);
+
+            svg.append('text')
+                .attr('class', 'axis-label')
+                .attr('text-anchor', 'middle')
+                .attr('x', width / 2)
+                .attr('y', height + 45)
+                .text('Average Emergency Department Wait Time (minutes)');
+
+            svg.append('line')
+                .attr('x1', xScale(avgWait))
+                .attr('x2', xScale(avgWait))
+                .attr('y1', 0)
+                .attr('y2', height)
+                .attr('stroke', '#d62828')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5');
+
+            svg.append('text')
+                .attr('x', xScale(avgWait))
+                .attr('y', -15)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('font-weight', '600')
+                .attr('fill', '#d62828')
+                .attr('font-family', '-apple-system, sans-serif')
+                .text(`US Average`);
+            
+            svg.append('text')
+                .attr('x', xScale(avgWait))
+                .attr('y', -2)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '11px')
+                .attr('font-weight', '600')
+                .attr('fill', '#d62828')
+                .attr('font-family', '-apple-system, sans-serif')
+                .text(`${avgWait} min`);
+
+            data.forEach(d => {
+                d.x = xScale(d.score);
+                d.y = height / 2;
+            });
+
+            const simulation = d3.forceSimulation(data)
+                .force('x', d3.forceX(d => xScale(d.score)).strength(1))
+                .force('y', d3.forceY(height / 2).strength(0.1))
+                .force('collide', d3.forceCollide(circleRadius + 2))
+                .stop();
+
+            for (let i = 0; i < 300; i++) simulation.tick();
+
+            const circles = svg.selectAll('.circle-group')
+                .data(data)
+                .enter()
+                .append('g')
+                .attr('class', 'circle-group');
+
+            circles.append('circle')
+                .attr('class', 'state-circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 0)
+                .attr('fill', d => colorScale(d.score))
+                .transition()
+                .duration(800)
+                .delay((d, i) => i * 15)
+                .attr('r', circleRadius);
+
+            circles.append('text')
+                .attr('class', 'state-label')
+                .attr('x', d => d.x)
+                .attr('y', d => d.y + 3)
+                .attr('opacity', 0)
+                .text(d => d.state)
+                .transition()
+                .duration(600)
+                .delay((d, i) => i * 15 + 400)
+                .attr('opacity', 1);
+
+            circles
+                .on('mouseover', function(event, d) {
+                    d3.select(this).select('circle')
+                        .transition()
+                        .duration(200)
+                        .attr('r', circleRadius + 5);
+
+                    d3.select(this).raise();
+
+                    tooltip
+                        .style('opacity', 1)
+                        .html(`
+                            <div class="tooltip-state">${stateNames[d.state]}</div>
+                            <div class="tooltip-value">Wait time: <strong>${d.score} minutes</strong></div>
+                        `)
+                        .style('left', (event.pageX + 15) + 'px')
+                        .style('top', (event.pageY - 15) + 'px');
+                })
+                .on('mousemove', function(event) {
+                    tooltip
+                        .style('left', (event.pageX + 15) + 'px')
+                        .style('top', (event.pageY - 15) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.select(this).select('circle')
+                        .transition()
+                        .duration(200)
+                        .attr('r', circleRadius);
+                    tooltip.style('opacity', 0);
+                });
+        }
+
+        const visualContainer = document.getElementById('viz-container');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxSvg = document.getElementById('lightbox-svg');
+        const closeLightbox = document.getElementById('closeLightbox');
+
+        visualContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('state-circle') || 
+                e.target.closest('.circle-group')) {
+                return;
+            }
+
+            lightboxSvg.innerHTML = '';
+            createBeeswarm(data, avgWaitTime, '#lightbox-svg', 1300, 800, 18);
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeLightbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
