@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIBRS Adoption Across America | Jennifer Estigene</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #ffffff;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            background: #2c2c2c;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        .nav {
+            padding: 30px 40px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        /* Split Layout Container */
+        .split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Left Side - Sticky Visual */
+        .visual-side {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            border-right: 1px solid #e8e8e8;
+        }
+
+        .visual-side img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        .visual-side img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Lightbox Overlay */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 95%;
+            max-height: 95vh;
+            object-fit: contain;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: zoomIn 0.3s ease;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 3em;
+            color: #ffffff;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            font-family: -apple-system, sans-serif;
+            font-weight: 300;
+        }
+
+        .lightbox-close:hover {
+            opacity: 1;
+        }
+
+        .lightbox-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            font-family: -apple-system, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Right Side - Scrolling Content */
+        .content-side {
+            padding: 80px 60px 120px;
+        }
+
+        .header-block {
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-weight: 400;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            font-family: 'Georgia', serif;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px 20px;
+            font-size: 0.95em;
+            padding: 25px 0;
+            border-top: 1px solid #e8e8e8;
+            border-bottom: 1px solid #e8e8e8;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .meta-value {
+            color: #444;
+        }
+
+        .content-block {
+            margin: 60px 0;
+        }
+
+        .content-block h2 {
+            font-size: 2em;
+            font-weight: 400;
+            margin-bottom: 25px;
+            font-family: 'Georgia', serif;
+        }
+
+        .content-block p {
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .content-block ul {
+            margin-left: 40px;
+            margin-bottom: 1.5em;
+            line-height: 1.8;
+        }
+
+        .content-block li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .content-block strong {
+            color: #2c2c2c;
+            font-weight: 600;
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: #f8f8f8;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            background: #ffffff;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: 400;
+            color: #E85D75;
+            font-family: 'Georgia', serif;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            font-family: -apple-system, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .callout-box {
+            background: #2c2c2c;
+            color: #ffffff;
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 4px;
+        }
+
+        .callout-box p {
+            font-size: 1.2em;
+            line-height: 1.7;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .methodology-list {
+            background: #f8f8f8;
+            padding: 40px;
+            border-radius: 4px;
+            margin: 40px 0;
+        }
+
+        .methodology-list h3 {
+            font-size: 1.5em;
+            font-weight: 400;
+            margin-bottom: 25px;
+            font-family: 'Georgia', serif;
+        }
+
+        .methodology-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .methodology-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .methodology-list li:last-child {
+            border-bottom: none;
+        }
+
+        .methodology-list strong {
+            color: #2c2c2c;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 140px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 0.8em;
+            border-top: 1px solid #e8e8e8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: -apple-system, sans-serif;
+            margin-top: 80px;
+        }
+
+        @media (max-width: 1200px) {
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+
+            .split-container {
+                grid-template-columns: 1fr;
+            }
+
+            .visual-side {
+                position: relative;
+                height: auto;
+                min-height: 60vh;
+                padding: 40px;
+            }
+
+            .content-side {
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .stat-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+    <nav class="nav">
+        <a href="../web-pages/data-visualization.html">← Back to Data Visualization</a>
+    </nav>
+
+    <div class="split-container">
+        <!-- Left: Sticky Visual -->
+        <div class="visual-side">
+            <img src="../images/nibrs_adoption_map.png" alt="NIBRS Adoption Map" id="mapImage">
+        </div>
+
+        <!-- Right: Scrolling Content -->
+        <div class="content-side">
+            <div class="header-block">
+                <h1>NIBRS Adoption Across America</h1>
+                <p class="subtitle">
+                    Mapping the uneven adoption of the FBI's modern crime reporting system across U.S. states
+                </p>
+
+                <div class="meta-grid">
+                    <span class="meta-label">Date</span>
+                    <span class="meta-value">February 2025</span>
+                    
+                    <span class="meta-label">Tools</span>
+                    <span class="meta-value">R, ggplot2, usmap</span>
+                    
+                    <span class="meta-label">Source</span>
+                    <span class="meta-value">FBI Crime Data API</span>
+                    
+                    <span class="meta-label">Type</span>
+                    <span class="meta-value">Choropleth Map, Policy Analysis</span>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h2>The Problem</h2>
+                <p>
+                    The National Incident-Based Reporting System (NIBRS) represents the FBI's modernization of crime data collection, providing detailed information about criminal incidents. However, its adoption has been dramatically uneven across the United States.
+                </p>
+
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">States >95%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">11%</div>
+                        <div class="stat-label">Pennsylvania</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Major Laggards</div>
+                    </div>
+                </div>
+
+                <div class="callout-box">
+                    <p>
+                        While a good amount of states exceed 95% participation, Pennsylvania (11%), Florida (18%), and New York (31%) severely lag behind, thus creating critical gaps in understanding crime patterns in some of America's most populous states.
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h2>Why This Matters</h2>
+                <p>
+                    NIBRS provides far more detailed crime data than the legacy Summary Reporting System (SRS), including:
+                </p>
+                <ul>
+                    <li><strong>Incident-level details:</strong> Information about victims, offenders, relationships, and circumstances</li>
+                    <li><strong>Expanded offense categories:</strong> 52 offense types compared to SRS's 8 index crimes</li>
+                    <li><strong>Better context:</strong> Location, time, weapon use, and injury severity</li>
+                    <li><strong>Victim demographics:</strong> Age, sex, race, and ethnicity of victims and offenders</li>
+                </ul>
+
+                <p>
+                    The low adoption rates in major states like Pennsylvania, Florida, and New York create significant blind spots in national crime statistics. These three states alone represent over 60 million people, nearly 20% of the U.S. population whose crime patterns are poorly understood at the federal level.
+                </p>
+
+                <p>
+                    This fragmented adoption undermines evidence-based policymaking, resource allocation for law enforcement, and our collective understanding of crime trends in America's largest and most diverse states.
+                </p>
+            </div>
+
+            <div class="content-block">
+                <h2>Design Choices</h2>
+                <p>
+                    The diverging color scale emphasizes the divide between high-performing states (dark brown) and laggards (red), with light brown representing states near the 90% threshold. This immediately draws attention to the geographic disparities.
+                </p>
+
+                <p>
+                    The map format allows for quick pattern recognition. Viewers can immediately see that the Northeast corridor and several major population centers have critically low adoption rates, while many rural and Western states have achieved near-universal participation.
+                </p>
+            </div>
+
+            <div class="methodology-list">
+                <h3>Methodology</h3>
+                <ul>
+                    <li><strong>Data Source:</strong> FBI Crime Data API</li>
+                    <li><strong>Metric:</strong> Percentage of law enforcement agencies reporting to NIBRS by state</li>
+                    <li><strong>Calculation:</strong> (NIBRS-participating agencies / Total agencies) × 100</li>
+                    <li><strong>Visualization:</strong> Choropleth map with diverging color scale</li>
+                    <li><strong>Color Palette:</strong> Red (low) to Light Brown (mid) to Dark Brown (high)</li>
+                    <li><strong>Midpoint:</strong> Set at 90% to highlight states meeting vs. falling short of widespread adoption</li>
+                    <li><strong>Tools:</strong> R with usmap, ggplot2, and tidyverse packages</li>
+                </ul>
+            </div>
+
+            <footer>
+                <p>© 2025 Jennifer Estigene</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Lightbox for zoomed image -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="closeLightbox">&times;</button>
+        <img src="../images/nibrs_adoption_map.png" alt="NIBRS Adoption Map - full view" id="lightboxImage">
+        <div class="lightbox-hint">Click anywhere to close</div>
+    </div>
+
+    <script>
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Lightbox functionality
+        const visualImage = document.getElementById('mapImage');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const closeLightbox = document.getElementById('closeLightbox');
+
+        // Open lightbox when clicking the visualization
+        visualImage.addEventListener('click', () => {
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Close lightbox when clicking the close button
+        closeLightbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close lightbox when clicking anywhere on the lightbox
+        lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Prevent closing when clicking the image itself
+        lightboxImage.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
