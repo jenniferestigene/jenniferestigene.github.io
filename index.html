@@ -419,7 +419,7 @@
             <h2>Portfolio</h2>
             <div class="work-list">
                 <a href="web-pages/data-visualization.html" class="work-item" data-section="data-visualization">
-                    <div class="work-number loaded">6</div>
+                    <div class="work-number loaded">0</div>
                     <div class="work-info">
                         <h3>Data Visualization</h3>
                         <p>Charts, maps, and interactive graphics</p>
@@ -428,7 +428,7 @@
                 </a>
 
         <a href="web-pages/creative-coding.html" class="work-item" data-section="creative-coding">
-            <div class="work-number loaded">4</div>
+            <div class="work-number loaded">0</div>
             <div class="work-info">
                 <h3>Creative Coding</h3>
                 <p>Computational design blending art and code</p>
@@ -494,15 +494,15 @@
                 selector: '.work-item'
             },
             'creative-coding': {
-                page: 'creative-coding.html',
+                page: 'web-pages/creative-coding.html',  // FIXED: was 'creative-coding.html'
                 selector: '.work-item'
             },
             'data-science': {
-                page: 'data-science.html',
+                page: 'web-pages/data-science.html',
                 selector: '.work-item'
             },
             'machine-learning': {
-                page: 'machine-learning.html',
+                page: 'web-pages/machine-learning.html',
                 selector: '.work-item'
             }
         };
@@ -517,7 +517,9 @@
             try {
                 const response = await fetch(config.page);
                 if (!response.ok) {
-                    return 0;
+                    // ADDED: If page doesn't exist, keep the manual count
+                    const manualCount = parseInt(countElement.textContent) || 0;
+                    return manualCount;
                 }
 
                 const html = await response.text();
@@ -531,8 +533,9 @@
                 
                 return count;
             } catch (error) {
-                // Keep manual count on error
-                return 0;
+                // MODIFIED: Keep manual count on error instead of returning 0
+                const manualCount = parseInt(countElement.textContent) || 0;
+                return manualCount;
             }
         }
 
