@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background: #000; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script>
+        // Simplified slime mold for preview
+        let molds = [];
+        let num = 1000; // Fewer agents for preview
+        let d;
+
+        function setup() {
+            createCanvas(480, 320); // 3:2 aspect ratio
+            angleMode(DEGREES);
+            d = pixelDensity();
+            
+            for (let i = 0; i < num; i++) {
+                molds[i] = {
+                    x: random(width),
+                    y: random(height),
+                    r: 0.5,
+                    heading: random(360),
+                    vx: 0,
+                    vy: 0,
+                    sensorAngle: 45,
+                    sensorDist: 10,
+                    rotAngle: 45
+                };
+            }
+        }
+
+        function draw() {
+            background(0, 5);
+            loadPixels();
+            
+            for (let i = 0; i < num; i++) {
+                let m = molds[i];
+                
+                // Update velocity
+                m.vx = cos(m.heading);
+                m.vy = sin(m.heading);
+                
+                // Update position with wrapping
+                m.x = (m.x + m.vx + width) % width;
+                m.y = (m.y + m.vy + height) % height;
+                
+                // Get sensor positions
+                let rSensorX = (m.x + m.sensorDist * cos(m.heading + m.sensorAngle) + width) % width;
+                let rSensorY = (m.y + m.sensorDist * sin(m.heading + m.sensorAngle) + height) % height;
+                let lSensorX = (m.x + m.sensorDist * cos(m.heading - m.sensorAngle) + width) % width;
+                let lSensorY = (m.y + m.sensorDist * sin(m.heading - m.sensorAngle) + height) % height;
+                let fSensorX = (m.x + m.sensorDist * cos(m.heading) + width) % width;
+                let fSensorY = (m.y + m.sensorDist * sin(m.heading) + height) % height;
+                
+                // Sample pixels
+                let rIndex = 4 * (d * floor(rSensorY)) * (d * width) + 4 * (d * floor(rSensorX));
+                let lIndex = 4 * (d * floor(lSensorY)) * (d * width) + 4 * (d * floor(lSensorX));
+                let fIndex = 4 * (d * floor(fSensorY)) * (d * width) + 4 * (d * floor(fSensorX));
+                
+                let r = pixels[rIndex] || 0;
+                let l = pixels[lIndex] || 0;
+                let f = pixels[fIndex] || 0;
+                
+                // Update heading based on sensor readings
+                if (f > l && f > r) {
+                    m.heading += 0;
+                } else if (f < l && f < r) {
+                    m.heading += random(1) < 0.5 ? m.rotAngle : -m.rotAngle;
+                } else if (l > r) {
+                    m.heading += -m.rotAngle;
+                } else if (r > l) {
+                    m.heading += m.rotAngle;
+                }
+                
+                // Draw agent
+                noStroke();
+                fill(255);
+                ellipse(m.x, m.y, m.r * 2, m.r * 2);
+            }
+        }
+    </script>
+</body>
+</html>

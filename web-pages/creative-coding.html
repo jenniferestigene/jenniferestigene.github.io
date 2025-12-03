@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Coding | Jennifer Estigene</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #fefefe;
+        }
+
+        .nav {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        .header {
+            text-align: center;
+            padding: 80px 20px 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            font-family: 'Georgia', serif;
+        }
+
+        .header .tagline {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        .header .description {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.8;
+            font-family: -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter Sections */
+        .filter-container {
+            max-width: 1200px;
+            margin: 40px auto 60px;
+            padding: 0 40px;
+        }
+
+        .filter-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-label {
+            font-size: 0.85em;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-family: -apple-system, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            color: #2c2c2c;
+            border-bottom-color: #ccc;
+        }
+
+        .filter-btn.active {
+            color: #2c2c2c;
+            border-bottom-color: #2c2c2c;
+        }
+
+        .work-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 60px 40px;
+        }
+
+        .work-item {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .work-item.hidden {
+            display: none;
+        }
+
+        .work-item:hover {
+            transform: translateY(-8px);
+        }
+
+        .work-item:hover .work-image {
+            opacity: 0.9;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            border-color: #2c2c2c;
+        }
+
+        .work-item:hover .work-title {
+            color: #000;
+        }
+
+        /* Work image container */
+        .work-image {
+            width: 100%;
+            aspect-ratio: 3/2;
+            background: #f8f8f8;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e8e8e8;
+            position: relative;
+        }
+
+        .work-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .work-image iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            pointer-events: none; /* Allow clicks to pass through to the link */
+        }
+
+        .work-image.placeholder {
+            color: #ccc;
+            font-size: 0.85em;
+            text-align: center;
+            padding: 20px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .work-title {
+            font-size: 1.4em;
+            font-weight: 400;
+            margin-bottom: 10px;
+            line-height: 1.3;
+            font-family: 'Georgia', serif;
+            transition: color 0.2s ease;
+        }
+
+        .work-description {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.6;
+            font-family: -apple-system, sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .header .tagline {
+                font-size: 1em;
+            }
+
+            .header .description {
+                font-size: 0.95em;
+            }
+
+            .work-grid {
+                grid-template-columns: 1fr;
+                padding: 0 20px 80px;
+                gap: 50px;
+            }
+
+            .filter-container {
+                padding: 0 20px;
+            }
+
+            .filter-buttons {
+                gap: 15px;
+            }
+
+            .filter-btn {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../index.html">← Home</a>
+    </nav>
+
+    <header class="header">
+        <h1>Creative Coding</h1>
+        <p class="tagline">A collection of experimental sketches built with code at the intersection of design and art.</p>
+    </header>
+
+    <!-- Filter Section -->
+    <div class="filter-container">
+        <div class="filter-section software-filters">
+            <div class="filter-label">Software</div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-software="all">All</button>
+                <button class="filter-btn" data-software="p5js">p5.js</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Grid -->
+    <div class="work-grid">
+        <!-- Project 1 - Slime Mold Simulation -->
+        <a href="../projects/slime-molds/slime-molds.html" class="work-item" data-software="p5js">
+            <div class="work-image">
+                <iframe src="../projects/slime-molds/preview-animation.html" scrolling="no"></iframe>
+            </div>
+            <h2 class="work-title">Slime Molds (Physarum)</h2>
+            <p class="work-description">
+                A pattern inspired by the movement of slime molds.
+            </p>
+        </a>
+
+        <!-- Project 2 - Wave Pattern -->
+        <a href="../projects/wave-pattern/wave-pattern.html" class="work-item" data-software="p5js">
+            <div class="work-image">
+                <iframe src="../projects/wave-pattern/preview-animation.html" scrolling="no"></iframe>
+            </div>
+            <h2 class="work-title">Wave Pattern</h2>
+            <p class="work-description">
+                A grid of particles orbiting in perfect synchronization, their coordinated movements create the illusion of waves flowing across the canvas.
+            </p>
+        </a>
+
+        <!-- Project 3 - Chladni Patterns -->
+        <a href="../projects/chladni-patterns/chladni-patterns.html" class="work-item" data-software="p5js">
+            <div class="work-image">
+                <iframe src="../projects/chladni-patterns/preview-animation.html" scrolling="no"></iframe>
+            </div>
+            <h2 class="work-title">Chladni Patterns</h2>
+            <p class="work-description">
+                Simulating the physics of vibrating plates through particle agents forming intricate geometric patterns.
+            </p>
+        </a>
+
+
+    <script>
+        // Get all filter buttons and work items
+        const softwareFilters = document.querySelectorAll('[data-software]');
+        const workItems = document.querySelectorAll('.work-item');
+
+        // Store active software filter
+        let activeSoftwareFilter = 'all';
+
+        // Function to apply software filter
+        function applyFilters() {
+            workItems.forEach(item => {
+                const software = item.getAttribute('data-software') || '';
+
+                // Check if item matches active software filter
+                if (activeSoftwareFilter === 'all' || software.includes(activeSoftwareFilter)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Software filter click handlers
+        softwareFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-software');
+                
+                // Update active filter
+                activeSoftwareFilter = filterValue;
+                
+                // Update button states
+                softwareFilters.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Apply the filter
+                applyFilters();
+            });
+        });
+    </script>
+</body>
+</html>

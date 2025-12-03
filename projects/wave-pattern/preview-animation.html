@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background: #e1e1e1; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script>
+        let grid = [];
+        let cols = 15;
+        let rows = 15; 
+        let loc = 100;
+
+        function setup() {
+            createCanvas(480, 320); // 3:2 aspect ratio for preview
+            let rowSize = height/rows;
+            let colSize = width/cols; 
+            
+            for (let i=0; i<cols; i++){
+                grid[i] = []
+                for (let j=0; j<rows; j++){
+                    grid[i][j] = {
+                        x0: colSize/2 + i*colSize,
+                        y0: rowSize/2 + j*rowSize,
+                        r: rowSize/2,
+                        angle: i*loc + j*loc,
+                        x: 0,
+                        y: 0
+                    };
+                }
+            }
+        }
+
+        function draw() {
+            background(225);
+            
+            for (let i=0; i<cols; i++){
+                for (let j=0; j<rows; j++){
+                    let cell = grid[i][j];
+                    
+                    // Update
+                    cell.x = cell.r * cos(cell.angle);
+                    cell.y = cell.r * sin(cell.angle);
+                    cell.angle += 0.05;
+                    
+                    // Display
+                    fill(0);
+                    noStroke();
+                    ellipse(cell.x0 + cell.x, cell.y0 + cell.y, 5, 5);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

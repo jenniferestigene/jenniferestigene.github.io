@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        canvas { 
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let particles = []; 
+        let num = 2000; // Fewer particles for preview
+        let m = 5; 
+        let n = 4; 
+        let threshold = 0.05;
+        let margin = 30; 
+        let w1, w2, h1, h2;
+        let scl = 1;
+
+        function setup() {
+            createCanvas(480, 320); // 3:2 aspect ratio
+            w1 = margin; w2 = width - margin;
+            h1 = margin; h2 = height - margin;
+            
+            for (let i = 0; i < num; i++) {
+                particles.push({
+                    position: createVector(random(w1, w2), random(h1, h2)),
+                    velocity: p5.Vector.random2D(),
+                    acceleration: createVector(),
+                    maxSpeed: 2,
+                    maxForce: 0.1
+                });
+            }
+        }
+
+        function draw() {
+            background(0);
+            
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                
+                // Edge wrapping
+                if (p.position.x > w2) p.position.x = w1;
+                else if (p.position.x < w1) p.position.x = w2;
+                if (p.position.y > h2) p.position.y = h1;
+                else if (p.position.y < h1) p.position.y = h2;
+                
+                // Seek behavior
+                let x = map(p.position.x, w1, w2, -1, 1) * scl;
+                let y = map(p.position.y, h1, h2, -1, 1) * scl;
+                let val = chladni(x, y);
+                
+                let target = p.position.copy();
+                if (abs(val) > threshold) {
+                    target.x += random(-3, 3);
+                    target.y += random(-3, 3);
+                }
+                
+                let desired = p5.Vector.sub(target, p.position);
+                desired.setMag(p.maxSpeed);
+                let steering = p5.Vector.sub(desired, p.velocity);
+                steering.limit(p.maxForce);
+                
+                p.acceleration.add(steering);
+                p.velocity.add(p.acceleration);
+                p.velocity.limit(p.maxSpeed);
+                p.position.add(p.velocity);
+                p.acceleration.mult(0);
+                
+                // Display
+                stroke(255);
+                point(p.position.x, p.position.y);
+            }
+        }
+
+        function chladni(x, y) {
+            let L = 1;
+            return cos(n * PI * x / L) * cos(m * PI * y / L) - 
+                   cos(m * PI * x / L) * cos(n * PI * y / L);
+        }
+    </script>
+</body>
+</html>

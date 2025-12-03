@@ -400,7 +400,7 @@
                     Bringing structure, insight, and meaning to data.
                 </p>
                 <div class="contact-buttons">
-                    <a href="mailto:jenniferestigene@outlook.com">Email</a>
+                    <a href="/cdn-cgi/l/email-protection#0369666d6d6a6566716670776a64666d66436c76776f6c6c682d606c6e">Email</a>
                     <!--
                     <a href="https://linkedin.com/in/jenniferestigene" target="_blank">LinkedIn</a>
                     -->
@@ -427,17 +427,15 @@
                     <div class="work-arrow">→</div>
                 </a>
 
-        <!-- Commented Out: Creative Coding -->
-        <!--
-        <a href="creative-coding.html" class="work-item" data-section="creative-coding">
+        <a href="web-pages/creative-coding.html" class="work-item" data-section="creative-coding">
             <div class="work-number loaded">4</div>
             <div class="work-info">
                 <h3>Creative Coding</h3>
-                <p>Computational design</p>
+                <p>Computational design blending art and code</p>
             </div>
             <div class="work-arrow">→</div>
         </a>
-        -->
+    
 
         <!-- Commented Out: Data Science -->
         <!--
@@ -470,7 +468,7 @@
         </div>
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Back to Top Button
         const backToTop = document.getElementById('backToTop');
         
@@ -554,7 +552,21 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const workItems = document.querySelectorAll('[data-section]');
+            const workList = document.querySelector('.work-list');
+            const workItems = Array.from(document.querySelectorAll('[data-section]'));
+            
+            // Sort work items alphabetically by the h3 title text
+            workItems.sort((a, b) => {
+                const titleA = a.querySelector('h3').textContent.trim().toLowerCase();
+                const titleB = b.querySelector('h3').textContent.trim().toLowerCase();
+                return titleA.localeCompare(titleB);
+            });
+
+            // Clear and re-append items in sorted order
+            workItems.forEach(item => {
+                workList.appendChild(item);
+            });
+
             let totalCount = 0;
 
             // Update each section count and accumulate total
