@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Disasters & Human Rights | Jennifer Estigene</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2c2c2c;
+            background: #fefefe;
+        }
+
+        .nav {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        .hero {
+            max-width: 1000px;
+            margin: 100px auto 80px;
+            padding: 0 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.2em;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .hero .tagline {
+            font-size: 1.4em;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .hero .meta {
+            font-size: 0.9em;
+            color: #999;
+            font-family: -apple-system, sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-height: 600px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .stats-banner {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 60px 40px;
+            background: #2c2c2c;
+            color: #fff;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3.5em;
+            font-weight: 300;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.8;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .section-header p {
+            font-size: 1.1em;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 100px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            font-size: 1.5em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .card p {
+            font-size: 1.05em;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .card li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 1.05em;
+            color: #555;
+        }
+
+        .card li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #2c2c2c;
+        }
+
+        .visual-card {
+            background: #f8f8f8;
+            border: 1px solid #e8e8e8;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .visual-card h3 {
+            font-size: 1.3em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .visual-placeholder {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+
+        .visual-placeholder img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .full-width-section {
+            background: #f8f8f8;
+            padding: 80px 0;
+            margin: 100px 0;
+        }
+
+        .full-width-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .full-width-section h2 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .full-width-section p {
+            font-size: 1.15em;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .method-card {
+            background: #fff;
+            padding: 30px;
+            border: 1px solid #e8e8e8;
+            text-align: center;
+        }
+
+        .method-number {
+            font-size: 3em;
+            font-weight: 300;
+            color: #2c2c2c;
+            margin-bottom: 15px;
+        }
+
+        .method-card h4 {
+            font-size: 1.1em;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .method-card p {
+            font-size: 0.95em;
+            color: #666;
+            text-align: left;
+        }
+
+        .cta-banner {
+            text-align: center;
+            padding: 80px 40px;
+            background: #2c2c2c;
+            color: #fff;
+            margin-top: 100px;
+        }
+
+        .cta-banner h2 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .cta-banner p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-banner a {
+            display: inline-block;
+            padding: 18px 45px;
+            margin: 0 10px;
+            background: #fff;
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.95em;
+            font-family: -apple-system, sans-serif;
+            transition: all 0.2s;
+        }
+
+        .cta-banner a:hover {
+            background: #f0f0f0;
+        }
+
+        @media (max-width: 968px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .hero .tagline {
+                font-size: 1.1em;
+            }
+
+            .stats-banner {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                padding: 40px 20px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .method-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 20px 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../web-pages/research.html">← Back to Research</a>
+    </nav>
+
+    <div class="hero">
+        <h1>Climate Disasters & Human Rights</h1>
+        <p class="tagline">A 23-year global assessment of government preparedness regarding the protection of fundamental human rights during climate disasters</p>
+        <p class="meta">MSc Data Science for Public Policy at the Hertie School, Class of 2025</p>
+        <p class="meta">Author: Jennifer Estigene</p>
+    </div>
+
+    <div class="hero-image">
+        <img src="Most_Impacted_Right_Map.png" alt="Global Rights Impacted Map">
+    </div>
+
+    <div class="stats-banner">
+        <div class="stat">
+            <div class="stat-number">23</div>
+            <div class="stat-label">Years of Data</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">52%</div>
+            <div class="stat-label">Prepared</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">88%</div>
+            <div class="stat-label">Rights Impacted</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Rights Analyzed</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>Research Question</h2>
+            <p>How effectively do governments protect fundamental human rights in climate disaster-prone regions, and how can data science models assess and improve state preparedness?</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>The Challenge</h3>
+                <p>Climate disasters increasingly threaten fundamental human rights worldwide. Yet we lack systematic frameworks to evaluate whether government preparedness translates into actual protection of rights like shelter, health, water, food, and life.</p>
+            </div>
+
+            <div class="card">
+                <h3>The Approach</h3>
+                <p>This thesis develops a data-driven preparedness classification model analyzing disaster events from 2000–2023, mapping disaster types to human rights impacts, and evaluating state responses globally.</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Key Findings</h2>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>Preparedness Varies Dramatically</h3>
+                <p>Over half (52.1%) of disasters were classified as "Prepared," but 15.8% were "Not Prepared"—with stark regional disparities between Global North and South.</p>
+            </div>
+
+            <div class="card">
+                <h3>Disaster Type Gaps</h3>
+                <p>Floods and earthquakes were well-managed, while droughts and extreme temperatures showed highest under-preparedness—revealing institutional gaps for slow-onset hazards.</p>
+            </div>
+
+            <div class="card">
+                <h3>Regional Vulnerabilities</h3>
+                <p>Sub-Saharan Africa and South Asia had highest frequencies of "Not Prepared" events. Europe and Oceania demonstrated stronger preparedness overall.</p>
+            </div>
+
+            <div class="card">
+                <h3>Widespread Rights Violations</h3>
+                <p>88% of disaster events were associated with high-risk rights impacts, most frequently threatening health, shelter, life, water, and access to aid.</p>
+            </div>
+
+            <div class="card">
+                <h3>Preparedness ≠ Protection</h3>
+                <p>Even high-preparedness countries (USA, China, India) experienced substantial rights violations—preparedness alone doesn't ensure rights protection.</p>
+            </div>
+
+            <div class="card">
+                <h3>Governance is Critical</h3>
+                <p>Countries with lower governance scores were consistently less prepared and more rights-vulnerable. Governance effectiveness moderated all outcomes.</p>
+            </div>
+        </div>
+
+        <div class="visual-card">
+            <h3>Human Rights Impacted by Sub-Region and Disaster Type</h3>
+            <div class="visual-placeholder">
+                <img src="Human_Rights_by_Subregion.png" alt="Human Rights Impacted by Sub-Region and Disaster Type">
+            </div>
+        </div>
+    </div>
+
+    <div class="full-width-section">
+        <div class="full-width-content">
+            <h2>Methodology</h2>
+            <p>A multi-stage analytical framework combining preparedness classification, human rights mapping, and advanced statistical techniques.</p>
+
+            <div class="method-grid">
+                <div class="method-card">
+                    <div class="method-number">1</div>
+                    <h4>Classification Model</h4>
+                    <p>Multi-tier scoring using log-transformed thresholds for deaths, injuries, homelessness. Binary signals of state stress including international appeals and emergency declarations.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">2</div>
+                    <h4>Rights Mapping</h4>
+                    <p>Custom framework mapping disaster subtypes to 8 fundamental rights: shelter, health, water, food, education, life, aid, and healthy environment.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">3</div>
+                    <h4>Clustering Analysis</h4>
+                    <p>KMeans clustering grouped countries into 3 preparedness profiles based on normalized disaster-type vectors, revealing distinct preparedness patterns.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">4</div>
+                    <h4>Regression Models</h4>
+                    <p>OLS regression explored relationships between preparedness scores and rights impacts, controlling for disaster frequency and severity.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">5</div>
+                    <h4>Geospatial Analysis</h4>
+                    <p>Choropleth maps visualized global preparedness index and rights violations per country, revealing geographic patterns.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">6</div>
+                    <h4>Time Series</h4>
+                    <p>Year-by-year analysis examined preparedness trends and normalized distribution of preparedness levels over two decades.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>Impact & Applications</h2>
+            <p>A scalable framework for global monitoring and policy reform</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>Policy Applications</h3>
+                <ul>
+                    <li>Global monitoring systems for disaster preparedness</li>
+                    <li>Targeted policy reform for specific disaster types and regions</li>
+                    <li>Resource allocation for climate adaptation</li>
+                    <li>International development priorities</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Key Insight</h3>
+                <p style="font-style: italic; padding: 25px; background: #f8f8f8; border-left: 4px solid #2c2c2c; margin: 0;">Traditional preparedness metrics must explicitly incorporate human rights protection as a core outcome measure—not a secondary consideration.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-banner">
+        <h2>Explore the Full Research</h2>
+        <p>Access the complete code, analysis, and visualizations</p>
+        <div>
+            <a href="https://github.com/jenniferestigene/thesis-climate-gov-preparedness-rights-" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+</body>
+</html>
