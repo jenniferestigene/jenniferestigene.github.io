@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction Using Machine Learning | Jennifer Estigene</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2c2c2c;
+            background: #fefefe;
+        }
+
+        .nav {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        .hero {
+            max-width: 1000px;
+            margin: 100px auto 80px;
+            padding: 0 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.2em;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .hero .tagline {
+            font-size: 1.4em;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .hero .meta {
+            font-size: 0.9em;
+            color: #999;
+            font-family: -apple-system, sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-height: 600px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .stats-banner {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 60px 40px;
+            background: #2c2c2c;
+            color: #fff;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3.5em;
+            font-weight: 300;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.8;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .section-header p {
+            font-size: 1.1em;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 100px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            font-size: 1.5em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .card p {
+            font-size: 1.05em;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .card li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 1.05em;
+            color: #555;
+        }
+
+        .card li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #2c2c2c;
+        }
+
+        .visual-card {
+            background: #f8f8f8;
+            border: 1px solid #e8e8e8;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .visual-card h3 {
+            font-size: 1.3em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .visual-placeholder {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+
+        .visual-placeholder img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .full-width-section {
+            background: #f8f8f8;
+            padding: 80px 0;
+            margin: 100px 0;
+        }
+
+        .full-width-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .full-width-section h2 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .full-width-section p {
+            font-size: 1.15em;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .method-card {
+            background: #fff;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .method-number {
+            font-size: 2.5em;
+            font-weight: 300;
+            color: #2c2c2c;
+            margin-bottom: 15px;
+        }
+
+        .method-card h4 {
+            font-size: 1.1em;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .method-card p {
+            font-size: 0.95em;
+            color: #666;
+            text-align: left;
+        }
+
+        .cta-banner {
+            text-align: center;
+            padding: 80px 40px;
+            background: #2c2c2c;
+            color: #fff;
+            margin-top: 100px;
+        }
+
+        .cta-banner h2 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .cta-banner p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-banner a {
+            display: inline-block;
+            padding: 18px 45px;
+            margin: 0 10px;
+            background: #fff;
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.95em;
+            font-family: -apple-system, sans-serif;
+            transition: all 0.2s;
+        }
+
+        .cta-banner a:hover {
+            background: #f0f0f0;
+        }
+
+        @media (max-width: 968px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .hero .tagline {
+                font-size: 1.1em;
+            }
+
+            .stats-banner {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                padding: 40px 20px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .method-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 20px 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../web-pages/machine-learning.html">← Back to Machine Learning</a>
+    </nav>
+
+    <div class="hero">
+        <h1>Diabetes Prediction</h1>
+        <p class="tagline">Classification model predicting diabetes onset using diagnostic measurements through systematic model comparison and optimization</p>
+    </div>
+
+    <div class="hero-image">
+        <img src="https://raw.githubusercontent.com/jenniferestigene/ml-diabetes-prediction/main/figures/diabetes_prediction_summary.png" alt="Diabetes Prediction Model Summary">
+    </div>
+
+    <div class="stats-banner">
+        <div class="stat">
+            <div class="stat-number">73%</div>
+            <div class="stat-label">Accuracy</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">72%</div>
+            <div class="stat-label">Recall</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">768</div>
+            <div class="stat-label">Patients</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">6</div>
+            <div class="stat-label">Models Tested</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>Project Overview</h2>
+            <p>Can machine learning identify diabetic patients using diagnostic measurements? This analysis develops a classification model to predict diabetes onset while minimizing missed diagnoses.</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>The Challenge</h3>
+                <p>Diabetes affects over 537 million adults globally, with early detection critical for effective treatment. This project addresses significant missing data (48.7% insulin, 29.6% skin thickness), class imbalance, and the need for interpretable models in medical contexts.</p>
+            </div>
+
+            <div class="card">
+                <h3>The Approach</h3>
+                <p>Systematic evaluation of six machine learning algorithms on the PIMA Indians Diabetes Database, with comprehensive preprocessing, hyperparameter tuning, and emphasis on recall (catching true diabetic cases) over precision.</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Key Findings</h2>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>Logistic Regression Outperformed Complex Models</h3>
+                <p>Despite being the simplest algorithm, Logistic Regression achieved the highest F1-score (0.661) and ROC-AUC (0.843), outperforming ensemble methods like Random Forest and Gradient Boosting.</p>
+            </div>
+
+            <div class="card">
+                <h3>Hyperparameter Tuning Critical for Medical Applications</h3>
+                <p>Optimization improved recall from 52% to 72%, reducing missed diabetic cases from 26 to 15 in the test set—a 39% improvement in catching true positives.</p>
+            </div>
+
+            <div class="card">
+                <h3>Glucose as Dominant Predictor</h3>
+                <p>Glucose level emerged as the strongest predictor (coefficient: 1.17), followed by BMI (0.52) and Age (0.41), aligning with established medical knowledge about diabetes risk factors.</p>
+            </div>
+
+            <div class="card">
+                <h3>Missing Data Patterns Informative</h3>
+                <p>Created missingness indicators captured patterns in absent data. Median imputation preserved distributions while addressing 48.7% missing insulin values and 29.6% missing skin thickness measurements.</p>
+            </div>
+
+            <div class="card">
+                <h3>Favorable Trade-off for Screening</h3>
+                <p>The tuned model accepts 5 additional false positives to catch 11 more true positives—appropriate for medical screening where missed diagnoses are costlier than additional testing.</p>
+            </div>
+
+            <div class="card">
+                <h3>Interpretability Enables Clinical Use</h3>
+                <p>Logistic regression's transparent coefficients allow clinicians to understand which features drive predictions, unlike black-box ensemble methods with similar accuracy.</p>
+            </div>
+        </div>
+
+        <div class="visual-card">
+            <h3>Model Performance Comparison</h3>
+            <div class="visual-placeholder">
+                <img src="https://raw.githubusercontent.com/jenniferestigene/ml-diabetes-prediction/main/figures/model_comparison_metrics.png" alt="Model Comparison Metrics">
+            </div>
+        </div>
+
+        <div class="visual-card">
+            <h3>Baseline vs Tuned Model Confusion Matrix</h3>
+            <div class="visual-placeholder">
+                <img src="https://raw.githubusercontent.com/jenniferestigene/ml-diabetes-prediction/main/figures/baseline_vs_tuned_confusion_matrix.png" alt="Baseline vs Tuned Confusion Matrix">
+            </div>
+        </div>
+    </div>
+
+    <div class="full-width-section">
+        <div class="full-width-content">
+            <h2>Methodology</h2>
+            <p>A systematic machine learning pipeline combining data preprocessing, model selection, and optimization tailored for medical diagnostics.</p>
+
+            <div class="method-grid">
+                <div class="method-card">
+                    <div class="method-number">1</div>
+                    <h4>Data Preprocessing</h4>
+                    <p>Converted biologically impossible zeros to NaN, created missingness indicators, applied median imputation, and standardized features using StandardScaler.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">2</div>
+                    <h4>Algorithm Comparison</h4>
+                    <p>Evaluated six models using 5-fold stratified cross-validation: Logistic Regression, Random Forest, Gradient Boosting, SVM, KNN, and Decision Tree.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">3</div>
+                    <h4>Performance Evaluation</h4>
+                    <p>Assessed models across accuracy, precision, recall, F1-score, and ROC-AUC. Prioritized recall to minimize false negatives in medical screening context.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">4</div>
+                    <h4>Hyperparameter Optimization</h4>
+                    <p>GridSearchCV explored 48 parameter combinations for Logistic Regression, testing regularization strength, penalty type, solver, and class weights.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">5</div>
+                    <h4>Feature Importance Analysis</h4>
+                    <p>Extracted and ranked feature coefficients to identify key predictors. Validated clinical alignment with established diabetes risk factors.</p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">6</div>
+                    <h4>Error Analysis</h4>
+                    <p>Examined misclassification patterns and prediction probabilities to understand model limitations and identify borderline cases requiring additional evaluation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>Technical Implementation</h2>
+            <p>Built with Python using scikit-learn, pandas, and comprehensive visualization libraries</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>Data Science Stack</h3>
+                <ul>
+                    <li>Python 3.12+ for all analysis and modeling</li>
+                    <li>scikit-learn for machine learning algorithms</li>
+                    <li>pandas and numpy for data manipulation</li>
+                    <li>matplotlib and seaborn for visualizations</li>
+                    <li>Jupyter notebooks for reproducible analysis</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Skills Demonstrated</h3>
+                <ul>
+                    <li>Missing data handling and imputation strategies</li>
+                    <li>Feature engineering and selection</li>
+                    <li>Model selection and hyperparameter tuning</li>
+                    <li>Cross-validation and statistical validation</li>
+                    <li>Healthcare analytics and cost-sensitive learning</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="visual-card">
+            <h3>Feature Importance Analysis</h3>
+            <div class="visual-placeholder">
+                <img src="https://raw.githubusercontent.com/jenniferestigene/ml-diabetes-prediction/main/figures/feature_importance.png" alt="Feature Importance">
+            </div>
+        </div>
+
+        <div class="visual-card">
+            <h3>ROC and Precision-Recall Curves</h3>
+            <div class="visual-placeholder">
+                <img src="https://raw.githubusercontent.com/jenniferestigene/ml-diabetes-prediction/main/figures/roc_curves.png" alt="ROC Curves">
+            </div>
+        </div>
+    </div>
+
+    <div class="full-width-section">
+        <div class="full-width-content">
+            <h2>Impact & Applications</h2>
+            <p>A framework for medical screening with emphasis on minimizing missed diagnoses</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Clinical Applications</h3>
+                    <ul>
+                        <li>Preliminary diabetes screening tool</li>
+                        <li>Risk stratification for patient populations</li>
+                        <li>Resource allocation for diagnostic testing</li>
+                        <li>Identification of high-risk individuals</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Key Insight</h3>
+                    <p style="font-style: italic; padding: 25px; background: #f8f8f8; border-left: 4px solid #2c2c2c; margin: 0;">For medical screening applications, simpler interpretable models like Logistic Regression can match or exceed complex ensemble methods while providing transparency crucial for clinical decision-making.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-banner">
+        <h2>Explore the Full Analysis</h2>
+        <p>Access the complete code, notebook, and visualizations on GitHub</p>
+        <div>
+            <a href="https://github.com/jenniferestigene/ml-diabetes-prediction" target="_blank">View on GitHub</a>
+            <a href="https://github.com/jenniferestigene/ml-diabetes-prediction/blob/main/notebook/ML_Diabetes_Prediction.ipynb" target="_blank">View Notebook</a>
+        </div>
+    </div>
+</body>
+</html>

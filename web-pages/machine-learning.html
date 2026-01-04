@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning | Jennifer Estigene</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #fefefe;
+        }
+
+        .nav {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        .header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            font-family: 'Georgia', serif;
+        }
+
+        .header .tagline {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        /* Filter Sections */
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 40px;
+        }
+
+        .filter-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            font-size: 0.85em;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-family: -apple-system, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            color: #2c2c2c;
+            border-bottom-color: #ccc;
+        }
+
+        .filter-btn.active {
+            color: #2c2c2c;
+            border-bottom-color: #2c2c2c;
+        }
+
+        /* Secondary filter styling (software) */
+        .software-filters .filter-btn {
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        /* Package filters - hidden by default */
+        .package-filters {
+            display: none;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+        }
+
+        .package-filters.visible {
+            display: block;
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 20px;
+        }
+
+        .package-filters .filter-btn {
+            font-size: 0.8em;
+            letter-spacing: 0.5px;
+        }
+
+        .package-filters .filter-label {
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
+        .work-list {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+        }
+
+        .work-item {
+            text-decoration: none;
+            color: inherit;
+            display: grid;
+            grid-template-columns: 60px 1fr 40px;
+            gap: 30px;
+            padding: 50px 0;
+            border-bottom: 1px solid #e8e8e8;
+            transition: all 0.3s ease;
+        }
+
+        .work-item.hidden {
+            display: none;
+        }
+
+        .work-item:hover {
+            transform: translateX(10px);
+        }
+
+        .work-item:hover .work-title {
+            color: #000;
+        }
+
+        .work-number {
+            font-size: 1.2em;
+            color: #999;
+            font-family: -apple-system, sans-serif;
+            font-weight: 300;
+        }
+
+        .work-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .work-title {
+            font-size: 1.8em;
+            font-weight: 400;
+            line-height: 1.3;
+            font-family: 'Georgia', serif;
+            transition: color 0.2s ease;
+        }
+
+        .work-meta {
+            font-size: 0.9em;
+            color: #999;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .work-description {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .work-arrow {
+            font-size: 1.5em;
+            color: #2c2c2c;
+            display: flex;
+            align-items: center;
+            font-family: -apple-system, sans-serif;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 0.8em;
+            border-top: 1px solid #e8e8e8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: -apple-system, sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .work-list {
+                padding: 0 20px 80px;
+            }
+
+            .work-item {
+                grid-template-columns: 40px 1fr;
+                gap: 20px;
+            }
+
+            .work-arrow {
+                display: none;
+            }
+
+            .work-title {
+                font-size: 1.4em;
+            }
+
+            .filter-container {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../index.html">← Home</a>
+    </nav>
+
+    <header class="header">
+        <h1>Machine Learning</h1>
+        <p class="tagline">Building models that learn from data.</p>
+    </header>
+
+    <!-- Filter Sections -->
+    <div class="filter-container">
+        <!-- Primary Filter: Model Type -->
+        <div class="filter-section type-filters">
+            <div class="filter-label">Model Type</div>
+            <div class="filter-buttons">
+                <button class="filter-btn type-filter active" data-type="all">All</button>
+                <button class="filter-btn type-filter" data-type="logistic regression">Logistic Regression</button>
+                <button class="filter-btn type-filter" data-type="random forest">Random Forest</button>
+                <button class="filter-btn type-filter" data-type="xgboost">XGBoost</button>
+                <button class="filter-btn type-filter" data-type="svm">SVM</button>
+                <button class="filter-btn type-filter" data-type="decision tree">Decision Tree</button>
+                <button class="filter-btn type-filter" data-type="knn">KNN</button>
+            </div>
+        </div>
+
+        <!-- Secondary Filter: Software -->
+        <div class="filter-section software-filters">
+            <div class="filter-label">Programming Language</div>
+            <div class="filter-buttons">
+                <button class="filter-btn software-filter active" data-software="all">All</button>
+                <button class="filter-btn software-filter" data-software="python">Python</button>
+                <button class="filter-btn software-filter" data-software="r">R</button>
+            </div>
+
+            <!-- Third Level Filter: Packages (conditionally visible) -->
+            <!-- Python Libraries -->
+            <div class="filter-section package-filters" id="python-packages">
+                <div class="filter-label">Python ML Libraries</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn package-filter active" data-package="all" data-parent="python">All</button>
+                    <button class="filter-btn package-filter" data-package="scikit-learn" data-parent="python">Scikit-learn</button>
+                    <button class="filter-btn package-filter" data-package="XGBoost" data-parent="python">XGBoost</button>
+                </div>
+            </div>
+
+            <!-- R Packages -->
+            <div class="filter-section package-filters" id="r-packages">
+                <div class="filter-label">R ML Packages</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn package-filter active" data-package="all" data-parent="r">All</button>
+                    <button class="filter-btn package-filter" data-package="caret" data-parent="r">caret</button>
+                    <button class="filter-btn package-filter" data-package="randomforest" data-parent="r">randomForest</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="work-list">
+        <a href="../projects/diabetes/diabetes-prediction.html" class="work-item"
+           data-category="logistic regression"
+           data-software="python"
+           data-packages="scikit-learn pandas matplotlib seaborn numpy">
+            <div class="work-number">01</div>
+            <div class="work-content">
+                <h2 class="work-title">Diabetes Prediction Using Machine Learning</h2>
+                <p class="work-meta">Logistic Regression • Python • 2025</p>
+                <p class="work-description">
+                    Machine learning classification model predicting diabetes using diagnostic measurements.
+                </p>
+            </div>
+            <div class="work-arrow">→</div>
+        </a>
+    </div>
+
+    <footer>
+        <p>© 2025 Jennifer Estigene</p>
+    </footer>
+
+    <script>
+        // Get all filter buttons
+        const typeFilters = document.querySelectorAll('.type-filter');
+        const softwareFilters = document.querySelectorAll('.software-filter');
+        const packageFilters = document.querySelectorAll('.package-filter');
+        const workItems = document.querySelectorAll('.work-item');
+
+        // Get package filter containers
+        const pythonPackagesSection = document.getElementById('python-packages');
+        const rPackagesSection = document.getElementById('r-packages');
+
+        // Store active filters as Sets (for multiple selections)
+        let activeTypeFilters = new Set(['all']);
+        let activeSoftwareFilters = new Set(['all']);
+        let activePackageFilters = new Set(['all']);
+
+        // Function to show/hide package filters based on software selection
+        function updatePackageFilters() {
+            // Hide all package sections
+            pythonPackagesSection.classList.remove('visible');
+            rPackagesSection.classList.remove('visible');
+
+            // If "All" is selected or no software selected, hide packages
+            if (activeSoftwareFilters.has('all') || activeSoftwareFilters.size === 0) {
+                // Reset package filters
+                activePackageFilters = new Set(['all']);
+                packageFilters.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-package') === 'all') {
+                        btn.classList.add('active');
+                    }
+                });
+                return;
+            }
+
+            // Show package sections for selected software
+            if (activeSoftwareFilters.has('python')) {
+                pythonPackagesSection.classList.add('visible');
+            }
+            if (activeSoftwareFilters.has('r')) {
+                rPackagesSection.classList.add('visible');
+            }
+        }
+
+        // Function to apply all filters with OR logic within categories, AND between categories
+        function applyFilters() {
+            workItems.forEach(item => {
+                const categories = item.getAttribute('data-category') || '';
+                const software = item.getAttribute('data-software') || '';
+                const packages = item.getAttribute('data-packages') || '';
+
+                // Check Type Filter (OR logic: matches if ANY selected type matches)
+                let matchesType = activeTypeFilters.has('all');
+                if (!matchesType) {
+                    for (let type of activeTypeFilters) {
+                        if (categories.includes(type)) {
+                            matchesType = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Check Software Filter (OR logic: matches if ANY selected software matches)
+                let matchesSoftware = activeSoftwareFilters.has('all');
+                if (!matchesSoftware) {
+                    for (let sw of activeSoftwareFilters) {
+                        if (software.includes(sw)) {
+                            matchesSoftware = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Check Package Filter (OR logic: matches if ANY selected package matches)
+                let matchesPackage = activePackageFilters.has('all');
+                if (!matchesPackage) {
+                    for (let pkg of activePackageFilters) {
+                        if (packages.includes(pkg)) {
+                            matchesPackage = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Show item only if it matches ALL filter categories (AND between categories)
+                if (matchesType && matchesSoftware && matchesPackage) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Type filter click handlers
+        typeFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-type');
+                
+                if (filterValue === 'all') {
+                    // Clicking "All" deselects everything else
+                    activeTypeFilters = new Set(['all']);
+                    typeFilters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                } else {
+                    // Clicking a specific filter
+                    if (activeTypeFilters.has(filterValue)) {
+                        // Already selected - deselect it
+                        activeTypeFilters.delete(filterValue);
+                        button.classList.remove('active');
+                        
+                        // If nothing left, select "All"
+                        if (activeTypeFilters.size === 0 || activeTypeFilters.has('all')) {
+                            activeTypeFilters = new Set(['all']);
+                            typeFilters.forEach(btn => {
+                                if (btn.getAttribute('data-type') === 'all') {
+                                    btn.classList.add('active');
+                                }
+                            });
+                        }
+                    } else {
+                        // Not selected - select it
+                        activeTypeFilters.delete('all'); // Remove "All"
+                        activeTypeFilters.add(filterValue);
+                        button.classList.add('active');
+                        
+                        // Deactivate "All" button
+                        typeFilters.forEach(btn => {
+                            if (btn.getAttribute('data-type') === 'all') {
+                                btn.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+                
+                applyFilters();
+            });
+        });
+
+        // Software filter click handlers
+        softwareFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-software');
+                
+                if (filterValue === 'all') {
+                    // Clicking "All" deselects everything else
+                    activeSoftwareFilters = new Set(['all']);
+                    softwareFilters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                } else {
+                    // Clicking a specific filter
+                    if (activeSoftwareFilters.has(filterValue)) {
+                        // Already selected - deselect it
+                        activeSoftwareFilters.delete(filterValue);
+                        button.classList.remove('active');
+                        
+                        // If nothing left, select "All"
+                        if (activeSoftwareFilters.size === 0) {
+                            activeSoftwareFilters = new Set(['all']);
+                            softwareFilters.forEach(btn => {
+                                if (btn.getAttribute('data-software') === 'all') {
+                                    btn.classList.add('active');
+                                }
+                            });
+                        }
+                    } else {
+                        // Not selected - select it
+                        activeSoftwareFilters.delete('all');
+                        activeSoftwareFilters.add(filterValue);
+                        button.classList.add('active');
+                        
+                        // Deactivate "All" button
+                        softwareFilters.forEach(btn => {
+                            if (btn.getAttribute('data-software') === 'all') {
+                                btn.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+                
+                updatePackageFilters();
+                applyFilters();
+            });
+        });
+
+        // Package filter click handlers
+        packageFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-package');
+                const parent = button.getAttribute('data-parent');
+                
+                if (filterValue === 'all') {
+                    // Clicking "All" deselects everything else
+                    activePackageFilters = new Set(['all']);
+                    packageFilters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                } else {
+                    // Clicking a specific filter
+                    if (activePackageFilters.has(filterValue)) {
+                        // Already selected - deselect it
+                        activePackageFilters.delete(filterValue);
+                        button.classList.remove('active');
+                        
+                        // If nothing left, select "All"
+                        if (activePackageFilters.size === 0) {
+                            activePackageFilters = new Set(['all']);
+                            packageFilters.forEach(btn => {
+                                if (btn.getAttribute('data-package') === 'all') {
+                                    btn.classList.add('active');
+                                }
+                            });
+                        }
+                    } else {
+                        // Not selected - select it
+                        activePackageFilters.delete('all');
+                        activePackageFilters.add(filterValue);
+                        button.classList.add('active');
+                        
+                        // Deactivate "All" button
+                        packageFilters.forEach(btn => {
+                            if (btn.getAttribute('data-package') === 'all') {
+                                btn.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+                
+                applyFilters();
+            });
+        });
+    </script>
+</body>
+</html>
