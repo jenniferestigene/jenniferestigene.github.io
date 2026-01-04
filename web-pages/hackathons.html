@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathons | Jennifer Estigene</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #fefefe;
+        }
+
+        .nav {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav a {
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .nav a:hover {
+            border-bottom-color: #2c2c2c;
+        }
+
+        .header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            font-family: 'Georgia', serif;
+        }
+
+        .header .tagline {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #e8e8e8, #e8e8e8);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .timeline-content {
+            grid-column: 2;
+            text-align: left;
+        }
+
+        .timeline-year {
+            grid-column: 1;
+            text-align: right;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: #2c2c2c;
+            border-radius: 50%;
+            border: 4px solid #fefefe;
+            box-shadow: 0 0 0 2px #2c2c2c;
+            z-index: 1;
+        }
+
+        .timeline-year {
+            font-size: 3.5em;
+            font-weight: 300;
+            color: #e8e8e8;
+            font-family: -apple-system, sans-serif;
+            line-height: 1;
+        }
+
+        .timeline-content {
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .event-title {
+            font-size: 1.4em;
+            font-weight: 400;
+            margin-bottom: 10px;
+            font-family: 'Georgia', serif;
+            white-space: nowrap;
+        }
+
+        .event-location {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 15px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .event-description {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .award-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #2c2c2c;
+            color: #fefefe;
+            font-size: 0.65em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .certificate-link {
+            display: block;
+            margin-top: 10px;
+            color: #2c2c2c;
+            text-decoration: none;
+            font-size: 0.85em;
+            font-family: -apple-system, sans-serif;
+            border-bottom: 1px solid #2c2c2c;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .certificate-link:hover {
+            opacity: 0.6;
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #fefefe;
+            font-size: 40px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .lightbox-close:hover {
+            opacity: 0.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 0.8em;
+            border-top: 1px solid #e8e8e8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: -apple-system, sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding-left: 60px;
+            }
+
+            .timeline-item:nth-child(even) .timeline-content,
+            .timeline-item:nth-child(odd) .timeline-content {
+                grid-column: 1;
+                text-align: left;
+            }
+
+            .timeline-item:nth-child(even) .timeline-year,
+            .timeline-item:nth-child(odd) .timeline-year {
+                grid-column: 1;
+                text-align: left;
+                font-size: 2.5em;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../index.html">← Home</a>
+    </nav>
+
+    <header class="header">
+        <h1>Hackathons</h1>
+        <p class="tagline">Two-time award winner at DataFest Germany, an intensive 48-hour data competition where interdisciplinary teams analyze complex, real-world datasets under time constraints. Successfully competed against university students nationwide to deliver actionable insights and compelling visualizations.</p>
+        <p class="tagline">These competitions required rapid problem scoping, creative data integration, statistical analysis, and effective communication of findings to industry professionals, thus demonstrating my ability to deliver high-quality analytical work under pressure while collaborating across technical disciplines.</p>
+    </header>
+
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-year">2025</div>
+            <div class="timeline-content">
+                <h2 class="event-title">DataFest Germany 2025</h2>
+                <p class="event-location">Munich, Germany</p>
+                <p class="event-description">
+                    Investigated spatial inequality in housing access across Germany through geospatial analysis, examining the intersection of migration, income disparities, and environmental factors. Developed visualizations revealing how migrant populations and eastern regions consistently experience reduced living space per capita, while areas with lower air quality correlate with diminished housing conditions, exposing compounding disadvantages for marginalized communities.
+                </p>
+                <p class="event-description">
+                    Built a spatial regression model with strong predictive power to quantify the relationship between regional divides, migration status, and housing inequality, providing actionable insights for evidence-based housing policy reform.
+                </p>
+                <span class="award-badge">Winner: Best Visualization</span>
+                <a href="#" class="certificate-link" onclick="openLightbox('cert2025'); return false;">View Certificate →</a>
+            </div>
+            <div class="timeline-dot"></div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-year">2024</div>
+            <div class="timeline-content">
+                <h2 class="event-title">DataFest Germany 2024</h2>
+                <p class="event-location">Mannheim, Germany</p>
+                <p class="event-description">
+                    Analyzed university student engagement patterns in online learning environments by integrating course performance data with external information-seeking behavior. Developed a web scraping pipeline to collect data from an educational YouTube channel, creating a novel dataset that revealed how students supplement insufficient course materials with external video content when struggling with specific modules.
+                </p>
+                <p class="event-description">
+                    Demonstrated innovative use of outside data sources to uncover the gap between institutional learning resources and student needs, providing evidence-based insights into how students autonomously seek knowledge when formal coursework falls short, highlighting opportunities for improved instructional design and resource allocation in online education.
+                </p>
+                <span class="award-badge">Winner: Best Use of Outside Data</span>
+                <a href="#" class="certificate-link" onclick="openLightbox('cert2024'); return false;">View Certificate →</a>
+            </div>
+            <div class="timeline-dot"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Jennifer Estigene</p>
+    </footer>
+
+    <!-- Lightbox for 2025 Certificate -->
+    <div id="cert2025" class="lightbox" onclick="closeLightbox('cert2025')">
+        <span class="lightbox-close" onclick="closeLightbox('cert2025')">&times;</span>
+        <img src="../projects/hackathons/DataFest_Germany_2025_Estigene_Jennifer.jpg" class="lightbox-content" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- Lightbox for 2024 Certificate -->
+    <div id="cert2024" class="lightbox" onclick="closeLightbox('cert2024')">
+        <span class="lightbox-close" onclick="closeLightbox('cert2024')">&times;</span>
+        <img src="../projects/hackathons/DataFest_Germany_2024_Estigene_Jennifer.jpg" class="lightbox-content" onclick="event.stopPropagation()">
+    </div>
+
+    <script>
+        function openLightbox(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeLightbox(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // Close lightbox on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.lightbox').forEach(function(lightbox) {
+                    lightbox.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
